@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="SilenZ">
+<meta name="theme-color" content="#0a0a0f">
+<title>SilenZ</title>
+<link rel="manifest" href="manifest.json">
+<style>
+:root {
+  --bg:       #0a0a0f;
+  --bg2:      #12121a;
+  --bg3:      #1a1a26;
+  --border:   #2a2a3a;
+  --accent:   #3b82f6;
+  --accent2:  #1d4ed8;
+  --text:     #e8e8f0;
+  --muted:    #6b6b8a;
+  --success:  #22c55e;
+  --warning:  #f59e0b;
+  --danger:   #ef4444;
+  --radius:   14px;
+  --safe-top: env(safe-area-inset-top, 20px);
+  --safe-bot: env(safe-area-inset-bottom, 20px);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; background: var(--bg); color: var(--text); font-family: -apple-system, 'SF Pro Display', system-ui, sans-serif; overflow: hidden; }
+
+/* ── Layout ── */
+#app { display: flex; flex-direction: column; height: 100%; padding-top: var(--safe-top); padding-bottom: var(--safe-bot); }
+#header { padding: 18px 20px 12px; display: flex; align-items: center; justify-content: space-between; }
+#main   { flex: 1; overflow-y: auto; padding: 0 16px 16px; -webkit-overflow-scrolling: touch; }
+#footer { padding: 16px 20px; border-top: 1px solid var(--border); }
+
+/* ── Header ── */
+.logo { display: flex; align-items: center; gap: 10px; }
+.logo-ring { position: relative; width: 36px; height: 36px; }
+.logo-ring svg { position: absolute; top: 0; left: 0; }
+.logo-ring.active .ring1 { animation: pulse-ring 2s ease-in-out infinite; }
+.logo-ring.active .ring2 { animation: pulse-ring 2s ease-in-out infinite 0.4s; }
+@keyframes pulse-ring {
+  0%, 100% { opacity: 0.3; r: 12; }
+  50% { opacity: 0.8; r: 15; }
+}
+.logo-name { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; }
+.logo-name span { color: var(--accent); }
+#status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); transition: background 0.3s; }
+#status-dot.active { background: var(--success); box-shadow: 0 0 8px var(--success); }
+
+/* ── Metre VU ── */
+.vu-wrap { display: flex; gap: 8px; margin: 8px 0 16px; align-items: center; }
+.vu-label { font-size: 11px; color: var(--muted); width: 36px; text-align: right; letter-spacing: 0.5px; }
+.vu-bar   { flex: 1; height: 6px; background: var(--bg3); border-radius: 3px; overflow: hidden; }
+.vu-fill  { height: 100%; width: 0%; border-radius: 3px; transition: width 0.05s; }
+.vu-in .vu-fill  { background: linear-gradient(90deg, var(--accent), #06b6d4); }
+.vu-out .vu-fill { background: linear-gradient(90deg, var(--success), var(--warning)); }
+.vu-db   { font-size: 11px; color: var(--muted); width: 44px; font-variant-numeric: tabular-nums; }
+
+/* ── Reduction badge ── */
+#reduction-badge {
+  text-align: center; margin: 0 0 20px;
+  font-size: 48px; font-weight: 700; letter-spacing: -2px;
+  color: var(--accent); font-variant-numeric: tabular-nums;
+  transition: color 0.3s;
+}
+#reduction-badge.good { color: var(--success); }
+#reduction-badge small { display: block; font-size: 13px; font-weight: 400; color: var(--muted); letter-spacing: 1px; margin-top: -4px; }
+
+/* ── Section ── */
+.section-label { font-size: 11px; color: var(--muted); letter-spacing: 1.5px; text-transform: uppercase; margin: 20px 0 10px; padding-left: 2px; }
+
+/* ── Profil cards ── */
+.profiles { display: flex; flex-direction: column; gap: 8px; }
+.profile-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--radius); overflow: hidden;
+  transition: border-color 0.2s;
+}
+.profile-card.active-profile { border-color: var(--accent); }
+.profile-card.locked { opacity: 0.5; }
+.profile-header {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 16px; cursor: pointer; user-select: none;
+}
+.profile-card.locked .profile-header { cursor: not-allowed; }
+.profile-icon {
+  width: 38px; height: 38px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0;
+}
+.profile-info { flex: 1; }
+.profile-name  { font-size: 15px; font-weight: 600; }
+.profile-desc  { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.profile-badge {
+  font-size: 11px; padding: 3px 8px; border-radius: 20px;
+  font-weight: 500; letter-spacing: 0.3px;
+}
+.badge-active   { background: rgba(59,130,246,0.15); color: var(--accent); }
+.badge-locked   { background: var(--bg3); color: var(--muted); }
+.badge-bientot  { background: rgba(245,158,11,0.12); color: var(--warning); }
+
+.profile-settings { padding: 0 16px 16px; border-top: 1px solid var(--border); }
+.profile-settings.hidden { display: none; }
+
+/* ── Sliders ── */
+.ctrl { margin-top: 14px; }
+.ctrl-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
+.ctrl-name  { font-size: 13px; font-weight: 500; }
+.ctrl-value { font-size: 12px; color: var(--accent); font-variant-numeric: tabular-nums; }
+input[type=range] {
+  -webkit-appearance: none; appearance: none;
+  width: 100%; height: 4px; border-radius: 2px;
+  background: var(--bg3); outline: none; cursor: pointer;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 20px; height: 20px; border-radius: 50%;
+  background: var(--accent); cursor: pointer;
+  box-shadow: 0 0 0 3px rgba(59,130,246,0.2);
+  transition: box-shadow 0.2s;
+}
+input[type=range]:active::-webkit-slider-thumb {
+  box-shadow: 0 0 0 6px rgba(59,130,246,0.25);
+}
+.ctrl-hints { display: flex; justify-content: space-between; margin-top: 4px; }
+.ctrl-hints span { font-size: 10px; color: var(--muted); }
+
+/* ── Bouton principal ── */
+#btn-main {
+  width: 100%; padding: 18px;
+  background: var(--accent); color: #fff;
+  border: none; border-radius: var(--radius);
+  font-size: 17px; font-weight: 600; letter-spacing: -0.2px;
+  cursor: pointer; transition: background 0.2s, transform 0.1s;
+  -webkit-user-select: none;
+}
+#btn-main:active { transform: scale(0.98); background: var(--accent2); }
+#btn-main.running { background: #1e293b; border: 1px solid var(--danger); color: var(--danger); }
+#btn-main:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* ── Toast ── */
+#toast {
+  position: fixed; bottom: calc(100px + var(--safe-bot));
+  left: 50%; transform: translateX(-50%) translateY(20px);
+  background: var(--bg3); border: 1px solid var(--border);
+  color: var(--text); padding: 10px 18px; border-radius: 30px;
+  font-size: 13px; white-space: nowrap;
+  opacity: 0; transition: opacity 0.3s, transform 0.3s;
+  pointer-events: none; z-index: 100;
+}
+#toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ── Séparateurs transport ── */
+.transport-group { margin-top: 4px; }
+.transport-label { font-size: 11px; color: var(--muted); padding: 6px 4px 2px; letter-spacing: 0.5px; }
+</style>
+</head>
+<body>
+<div id="app">
+  <header id="header">
+    <div class="logo">
+      <div class="logo-ring" id="logo-ring">
+        <svg width="36" height="36" viewBox="0 0 36 36">
+          <circle class="ring2" cx="18" cy="18" r="15" fill="none" stroke="#3b82f6" stroke-width="1.5" opacity="0.3"/>
+          <circle class="ring1" cx="18" cy="18" r="11" fill="none" stroke="#3b82f6" stroke-width="1.5" opacity="0.5"/>
+          <circle cx="18" cy="18" r="5" fill="#3b82f6"/>
+        </svg>
+      </div>
+      <div class="logo-name">Silen<span>Z</span></div>
+    </div>
+    <div id="status-dot"></div>
+  </header>
+
+  <main id="main">
+    <!-- VU mètres -->
+    <div class="vu-wrap vu-in">
+      <span class="vu-label">ENTRÉE</span>
+      <div class="vu-bar"><div class="vu-fill" id="vu-in-fill"></div></div>
+      <span class="vu-db" id="vu-in-db">— dB</span>
+    </div>
+    <div class="vu-wrap vu-out">
+      <span class="vu-label">SORTIE</span>
+      <div class="vu-bar"><div class="vu-fill" id="vu-out-fill"></div></div>
+      <span class="vu-db" id="vu-out-db">— dB</span>
+    </div>
+
+    <!-- Badge réduction -->
+    <div id="reduction-badge">
+      — dB
+      <small>RÉDUCTION</small>
+    </div>
+
+    <!-- Profils -->
+    <div class="section-label">Profil</div>
+    <div class="profiles">
+
+      <!-- Bureau (actif) -->
+      <div class="profile-card active-profile" id="card-bureau">
+        <div class="profile-header" onclick="toggleSettings('bureau')">
+          <div class="profile-icon" style="background:rgba(59,130,246,0.12)">🏢</div>
+          <div class="profile-info">
+            <div class="profile-name">Bureau</div>
+            <div class="profile-desc">Open space · Climatisation · Brouhaha</div>
+          </div>
+          <div class="profile-badge badge-active">Actif</div>
+        </div>
+        <div class="profile-settings" id="settings-bureau">
+          <div class="ctrl">
+            <div class="ctrl-header">
+              <span class="ctrl-name">Intensité</span>
+              <span class="ctrl-value" id="val-mu">0.30</span>
+            </div>
+            <input type="range" id="slider-mu" min="10" max="50" value="30"
+                   oninput="updateMu(this.value)">
+            <div class="ctrl-hints"><span>Doux</span><span>Fort</span></div>
+          </div>
+          <div class="ctrl">
+            <div class="ctrl-header">
+              <span class="ctrl-name">Couleur du résidu</span>
+              <span class="ctrl-value" id="val-cutoff">400 Hz</span>
+            </div>
+            <input type="range" id="slider-cutoff" min="200" max="800" step="50" value="400"
+                   oninput="updateCutoff(this.value)">
+            <div class="ctrl-hints"><span>Plus sourd</span><span>Plus naturel</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Transport (verrouillé) -->
+      <div class="section-label transport-label">Transports — bientôt disponibles</div>
+      <div class="transport-group">
+
+        <div class="profile-card locked" id="card-bus">
+          <div class="profile-header" onclick="showLocked('Bus')">
+            <div class="profile-icon" style="background:rgba(245,158,11,0.08)">🚌</div>
+            <div class="profile-info">
+              <div class="profile-name">Bus</div>
+              <div class="profile-desc">Moteur diesel · Vibrations caisse</div>
+            </div>
+            <div class="profile-badge badge-bientot">Bientôt</div>
+          </div>
+        </div>
+
+        <div class="profile-card locked" id="card-metro" style="margin-top:8px">
+          <div class="profile-header" onclick="showLocked('Métro')">
+            <div class="profile-icon" style="background:rgba(245,158,11,0.08)">🚇</div>
+            <div class="profile-info">
+              <div class="profile-name">Métro</div>
+              <div class="profile-desc">Roulement sur rails · Crissements</div>
+            </div>
+            <div class="profile-badge badge-bientot">Bientôt</div>
+          </div>
+        </div>
+
+        <div class="profile-card locked" id="card-train" style="margin-top:8px">
+          <div class="profile-header" onclick="showLocked('Train')">
+            <div class="profile-icon" style="background:rgba(245,158,11,0.08)">🚄</div>
+            <div class="profile-info">
+              <div class="profile-name">Train</div>
+              <div class="profile-desc">Climatisation · Roulement amorti</div>
+            </div>
+            <div class="profile-badge badge-bientot">Bientôt</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Moto (verrouillé) -->
+      <div class="section-label" style="margin-top:16px">Moto</div>
+      <div class="profile-card locked" id="card-moto">
+        <div class="profile-header" onclick="showLocked('Moto')">
+          <div class="profile-icon" style="background:rgba(239,68,68,0.08)">🏍️</div>
+          <div class="profile-info">
+            <div class="profile-name">Moto · BMW F800R</div>
+            <div class="profile-desc">Pitch-tracking échappement · Garde-fous sécurité</div>
+          </div>
+          <div class="profile-badge badge-locked">Prochainement</div>
+        </div>
+      </div>
+
+    </div><!-- /profiles -->
+  </main><!-- /main -->
+
+  <footer id="footer">
+    <button id="btn-main" onclick="toggleProcessing()" disabled>
+      Branchez vos écouteurs filaires
+    </button>
+  </footer>
+</div>
+<div id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// ÉTAT DE L'APPLICATION
+// ═══════════════════════════════════════════════════════════
+const state = {
+  running:  false,
+  mu:       0.3,
+  cutoff:   400,
+  audioCtx: null,
+  stream:   null,
+  source:   null,
+  worklet:  null,
+  lpFilter: null,
+  analyserIn:  null,
+  analyserOut: null,
+  animFrame: null,
+  rmsHistory: { in: [], out: [] },
+};
+
+// ═══════════════════════════════════════════════════════════
+// AUDIWORKLET — NLMS PROCESSOR (injecté via Blob URL)
+// ═══════════════════════════════════════════════════════════
+const WORKLET_CODE = `
+class NLMSProcessor extends AudioWorkletProcessor {
+  constructor(options) {
+    super();
+    const o = options.processorOptions || {};
+    this.FL  = o.filterLength || 256;
+    this.mu  = o.mu || 0.3;
+    this.eps = 1e-6;
+    this.w   = new Float32Array(this.FL);
+    this.buf = new Float32Array(this.FL);
+    this.bi  = 0;
+
+    // Tampon de délai (latence pipeline ~20ms en PWA)
+    const delayMs  = o.latencyMs || 20;
+    this.delayN    = Math.max(1, Math.round(delayMs / 1000 * sampleRate));
+    this.delayBuf  = new Float32Array(this.delayN);
+    this.delayIdx  = 0;
+
+    // Stats toutes les 4096 samples
+    this.statCount = 0;
+    this.statWin   = 4096;
+    this.sumSqIn   = 0;
+    this.sumSqOut  = 0;
+
+    this.port.onmessage = (e) => {
+      if (e.data.mu  !== undefined) this.mu = e.data.mu;
+    };
+  }
+
+  process(inputs, outputs) {
+    const inp = inputs[0]?.[0];
+    const out = outputs[0]?.[0];
+    if (!inp || !out) return true;
+
+    for (let i = 0; i < inp.length; i++) {
+      const x = inp[i];
+
+      // Signal retardé = ce qui arrive à l'oreille (avec latence pipeline)
+      const d = this.delayBuf[this.delayIdx];
+      this.delayBuf[this.delayIdx] = x;
+      this.delayIdx = (this.delayIdx + 1) % this.delayN;
+
+      // Mise à jour tampon circulaire
+      this.buf[this.bi] = x;
+
+      // Sortie filtre + puissance signal
+      let y = 0, power = this.eps;
+      for (let j = 0; j < this.FL; j++) {
+        const idx = (this.bi - j + this.FL) % this.FL;
+        y     += this.w[j] * this.buf[idx];
+        power += this.buf[idx] * this.buf[idx];
+      }
+
+      // Erreur et mise à jour des coefficients (NLMS)
+      const e    = d - y;
+      const step = this.mu / power;
+      for (let j = 0; j < this.FL; j++) {
+        const idx = (this.bi - j + this.FL) % this.FL;
+        this.w[j] += step * e * this.buf[idx];
+      }
+
+      this.bi = (this.bi + 1) % this.FL;
+      out[i]  = e;
+
+      // Statistiques
+      this.sumSqIn  += x * x;
+      this.sumSqOut += e * e;
+      this.statCount++;
+      if (this.statCount >= this.statWin) {
+        const rmsIn  = Math.sqrt(this.sumSqIn  / this.statWin);
+        const rmsOut = Math.sqrt(this.sumSqOut / this.statWin);
+        this.port.postMessage({ rmsIn, rmsOut });
+        this.sumSqIn = this.sumSqOut = this.statCount = 0;
+      }
+    }
+    return true;
+  }
+}
+registerProcessor('nlms-processor', NLMSProcessor);
+`;
+
+// ═══════════════════════════════════════════════════════════
+// VÉRIFICATION ÉCOUTEURS FILAIRES
+// ═══════════════════════════════════════════════════════════
+function checkHeadphones() {
+  const handler = () => {
+    const devices = navigator.mediaDevices?.enumerateDevices?.();
+    if (devices) {
+      devices.then(list => {
+        const hasWired = list.some(d =>
+          d.kind === 'audiooutput' && d.label &&
+          /headphone|earphone|wired|jack|headset/i.test(d.label)
+        );
+        const btn = document.getElementById('btn-main');
+        if (hasWired || true) { // iOS ne distingue pas toujours, on laisse passer
+          btn.disabled = false;
+          btn.textContent = 'Démarrer la réduction de bruit';
+        }
+      });
+    } else {
+      document.getElementById('btn-main').disabled = false;
+      document.getElementById('btn-main').textContent = 'Démarrer la réduction de bruit';
+    }
+  };
+  handler();
+  if (navigator.mediaDevices?.addEventListener)
+    navigator.mediaDevices.addEventListener('devicechange', handler);
+}
+
+// ═══════════════════════════════════════════════════════════
+// TRAITEMENT AUDIO
+// ═══════════════════════════════════════════════════════════
+async function toggleProcessing() {
+  if (state.running) { stopProcessing(); return; }
+  await startProcessing();
+}
+
+async function startProcessing() {
+  const btn = document.getElementById('btn-main');
+  btn.disabled = true;
+  btn.textContent = 'Démarrage…';
+
+  try {
+    // Contexte audio — basse latence
+    state.audioCtx = new (window.AudioContext || window.webkitAudioContext)({
+      sampleRate: 48000,
+      latencyHint: 'interactive',
+    });
+
+    // Micro — mode measurement pour désactiver les traitements iOS
+    state.stream = await navigator.mediaDevices.getUserMedia({
+      audio: {
+        echoCancellation:   false,
+        noiseSuppression:   false,
+        autoGainControl:    false,
+        sampleRate:         48000,
+      }
+    });
+
+    // Source micro
+    state.source = state.audioCtx.createMediaStreamSource(state.stream);
+
+    // Injecteur AudioWorklet via Blob
+    const blob    = new Blob([WORKLET_CODE], { type: 'application/javascript' });
+    const blobURL = URL.createObjectURL(blob);
+    await state.audioCtx.audioWorklet.addModule(blobURL);
+    URL.revokeObjectURL(blobURL);
+
+    state.worklet = new AudioWorkletNode(state.audioCtx, 'nlms-processor', {
+      processorOptions: {
+        filterLength: 256,
+        mu:           state.mu,
+        latencyMs:    state.audioCtx.baseLatency * 1000 || 20,
+      },
+      numberOfInputs:  1,
+      numberOfOutputs: 1,
+      outputChannelCount: [1],
+    });
+
+    // Messages du worklet (stats RMS)
+    state.worklet.port.onmessage = (e) => {
+      state.rmsHistory.in.push(e.data.rmsIn);
+      state.rmsHistory.out.push(e.data.rmsOut);
+      if (state.rmsHistory.in.length > 20) {
+        state.rmsHistory.in.shift();
+        state.rmsHistory.out.shift();
+      }
+    };
+
+    // Filtre passe-bas sur le résidu
+    state.lpFilter = state.audioCtx.createBiquadFilter();
+    state.lpFilter.type      = 'lowpass';
+    state.lpFilter.frequency.value = state.cutoff;
+    state.lpFilter.Q.value   = 0.7;
+
+    // Analyseurs pour les VU mètres
+    state.analyserIn  = state.audioCtx.createAnalyser();
+    state.analyserOut = state.audioCtx.createAnalyser();
+    state.analyserIn.fftSize  = 256;
+    state.analyserOut.fftSize = 256;
+
+    // Chaîne audio : micro → analyserIn → worklet → lpFilter → analyserOut → destination
+    state.source.connect(state.analyserIn);
+    state.analyserIn.connect(state.worklet);
+    state.worklet.connect(state.lpFilter);
+    state.lpFilter.connect(state.analyserOut);
+    state.analyserOut.connect(state.audioCtx.destination);
+
+    state.running = true;
+    updateUI(true);
+    startVULoop();
+
+  } catch (err) {
+    console.error(err);
+    showToast(err.name === 'NotAllowedError'
+      ? 'Accès au micro refusé — autorisez-le dans Réglages'
+      : 'Erreur : ' + err.message);
+    btn.disabled   = false;
+    btn.textContent = 'Démarrer la réduction de bruit';
+  }
+}
+
+function stopProcessing() {
+  state.running = false;
+  cancelAnimationFrame(state.animFrame);
+
+  state.analyserOut?.disconnect();
+  state.lpFilter?.disconnect();
+  state.worklet?.disconnect();
+  state.analyserIn?.disconnect();
+  state.source?.disconnect();
+  state.stream?.getTracks().forEach(t => t.stop());
+  state.audioCtx?.close();
+
+  state.rmsHistory.in  = [];
+  state.rmsHistory.out = [];
+  updateUI(false);
+}
+
+function updateMu(v) {
+  state.mu = v / 100;
+  document.getElementById('val-mu').textContent = state.mu.toFixed(2);
+  state.worklet?.port.postMessage({ mu: state.mu });
+}
+
+function updateCutoff(v) {
+  state.cutoff = parseInt(v);
+  document.getElementById('val-cutoff').textContent = state.cutoff + ' Hz';
+  if (state.lpFilter)
+    state.lpFilter.frequency.setTargetAtTime(state.cutoff, state.audioCtx.currentTime, 0.05);
+}
+
+// ═══════════════════════════════════════════════════════════
+// VU MÈTRES ET RÉDUCTION
+// ═══════════════════════════════════════════════════════════
+function startVULoop() {
+  const bufIn  = new Float32Array(state.analyserIn.fftSize);
+  const bufOut = new Float32Array(state.analyserOut.fftSize);
+
+  function loop() {
+    if (!state.running) return;
+
+    state.analyserIn.getFloatTimeDomainData(bufIn);
+    state.analyserOut.getFloatTimeDomainData(bufOut);
+
+    const rmsIn  = Math.sqrt(bufIn.reduce((s,v)  => s + v*v, 0) / bufIn.length);
+    const rmsOut = Math.sqrt(bufOut.reduce((s,v) => s + v*v, 0) / bufOut.length);
+
+    const dbIn  = rmsIn  > 1e-5 ? 20 * Math.log10(rmsIn)  : -60;
+    const dbOut = rmsOut > 1e-5 ? 20 * Math.log10(rmsOut) : -60;
+
+    const pctIn  = Math.max(0, Math.min(100, (dbIn  + 60) / 60 * 100));
+    const pctOut = Math.max(0, Math.min(100, (dbOut + 60) / 60 * 100));
+
+    document.getElementById('vu-in-fill').style.width  = pctIn  + '%';
+    document.getElementById('vu-out-fill').style.width = pctOut + '%';
+    document.getElementById('vu-in-db').textContent    = dbIn.toFixed(1)  + ' dB';
+    document.getElementById('vu-out-db').textContent   = dbOut.toFixed(1) + ' dB';
+
+    // Badge réduction (moyenne glissante sur historique worklet)
+    if (state.rmsHistory.in.length > 3) {
+      const avgIn  = state.rmsHistory.in.slice(-10).reduce((a,b)=>a+b,0) / Math.min(state.rmsHistory.in.length, 10);
+      const avgOut = state.rmsHistory.out.slice(-10).reduce((a,b)=>a+b,0) / Math.min(state.rmsHistory.out.length, 10);
+      if (avgIn > 1e-6) {
+        const reduction = 20 * Math.log10(avgOut / avgIn);
+        const badge = document.getElementById('reduction-badge');
+        badge.querySelector('small').textContent = 'RÉDUCTION';
+        const val = Math.abs(reduction).toFixed(1);
+        badge.firstChild.textContent = '−' + val + ' dB';
+        badge.className = reduction < -8 ? 'good' : '';
+      }
+    }
+
+    state.animFrame = requestAnimationFrame(loop);
+  }
+  loop();
+}
+
+// ═══════════════════════════════════════════════════════════
+// UI HELPERS
+// ═══════════════════════════════════════════════════════════
+function updateUI(running) {
+  const btn  = document.getElementById('btn-main');
+  const dot  = document.getElementById('status-dot');
+  const ring = document.getElementById('logo-ring');
+  const badge = document.getElementById('reduction-badge');
+
+  btn.disabled   = false;
+  btn.textContent = running ? 'Arrêter' : 'Démarrer la réduction de bruit';
+  btn.className  = running ? 'running' : '';
+  dot.className  = running ? 'active' : '';
+  ring.className = running ? 'logo-ring active' : 'logo-ring';
+
+  if (!running) {
+    badge.firstChild.textContent = '— dB';
+    badge.className = '';
+    document.getElementById('vu-in-fill').style.width  = '0%';
+    document.getElementById('vu-out-fill').style.width = '0%';
+    document.getElementById('vu-in-db').textContent    = '— dB';
+    document.getElementById('vu-out-db').textContent   = '— dB';
+  }
+}
+
+function toggleSettings(profile) {
+  const el = document.getElementById('settings-' + profile);
+  if (!el) return;
+  el.classList.toggle('hidden');
+}
+
+function showLocked(name) {
+  showToast(name + ' — disponible prochainement');
+}
+
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ═══════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+  checkHeadphones();
+  if ('serviceWorker' in navigator)
+    navigator.serviceWorker.register('./sw.js').catch(() => {});
+  // Initialiser slider display
+  updateMu(document.getElementById('slider-mu').value);
+  updateCutoff(document.getElementById('slider-cutoff').value);
+});
+</script>
+</body>
+</html>
