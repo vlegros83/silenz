@@ -215,6 +215,15 @@ input[type=range]::-webkit-slider-thumb {
                    oninput="updateCutoff(this.value)">
             <div class="ctrl-hints"><span>Plus sourd</span><span>Plus naturel</span></div>
           </div>
+          <div class="ctrl">
+            <div class="ctrl-header">
+              <span class="ctrl-name">Sensibilité micro</span>
+              <span class="ctrl-value" id="val-gain">+20 dB</span>
+            </div>
+            <input type="range" id="slider-gain" min="1" max="50" step="1" value="10"
+                   oninput="updateGain(this.value)">
+            <div class="ctrl-hints"><span>Faible</span><span>Élevée</span></div>
+          </div>
           <button class="btn-reset" onclick="resetDefaults()">↺ Réinitialiser les valeurs par défaut</button>
         </div>
       </div>
@@ -277,13 +286,15 @@ input[type=range]::-webkit-slider-thumb {
 <div id="toast"></div>
 
 <script>
-const DEFAULTS = { mu: 30, cutoff: 400 };
+const DEFAULTS = { mu: 30, cutoff: 400, gain: 10 };
 const state = {
   running: false, mu: 0.3, cutoff: 400,
   audioCtx: null, stream: null, source: null,
   worklet: null, lpFilter: null,
   analyserIn: null, analyserOut: null, animFrame: null,
   rmsHistory: { in: [], out: [] },
+  inputGain: null,
+  gainValue: 10,
 };
 
 // ── Debug ─────────────────────────────────────────────────
@@ -364,13 +375,20 @@ async function startProcessing() {
 
     // Chaîne : micro → analyserIn → worklet(NLMS) → lpFilter → analyserOut → sortie
     state.source = state.audioCtx.createMediaStreamSource(state.stream);
-    state.source.connect(state.analyserIn);
+
+    // Gain d'entrée (boost du signal micro)
+    state.inputGain = state.audioCtx.createGain();
+    state.inputGain.gain.value = state.gainValue;
+
+    state.source.connect(state.inputGain);
+    state.inputGain.connect(state.analyserIn);
     state.analyserIn.connect(state.worklet);
     state.worklet.connect(state.lpFilter);
     state.lpFilter.connect(state.analyserOut);
     state.analyserOut.connect(state.audioCtx.destination);
 
     dbg('Chaîne audio connectée ✓', 'ok');
+    dbg('Gain micro : x' + state.gainValue + ' (+' + Math.round(20*Math.log10(state.gainValue)) + 'dB)', 'ok');
     state.running = true;
     updateUI(true);
     startVULoop();
@@ -397,6 +415,7 @@ function stopProcessing() {
     state.lpFilter?.disconnect();
     state.worklet?.disconnect();
     state.analyserIn?.disconnect();
+    state.inputGain?.disconnect();
     state.source?.disconnect();
   } catch(e) {}
   state.stream?.getTracks().forEach(t => t.stop());
@@ -460,11 +479,20 @@ function updateCutoff(v) {
   if (state.lpFilter)
     state.lpFilter.frequency.setTargetAtTime(state.cutoff, state.audioCtx.currentTime, 0.05);
 }
+function updateGain(v) {
+  state.gainValue = parseFloat(v);
+  const db = Math.round(20 * Math.log10(state.gainValue));
+  document.getElementById('val-gain').textContent = '+' + db + ' dB';
+  if (state.inputGain)
+    state.inputGain.gain.setTargetAtTime(state.gainValue, state.audioCtx.currentTime, 0.05);
+}
 function resetDefaults() {
   document.getElementById('slider-mu').value     = DEFAULTS.mu;
   document.getElementById('slider-cutoff').value = DEFAULTS.cutoff;
+  document.getElementById('slider-gain').value   = DEFAULTS.gain;
   updateMu(DEFAULTS.mu);
   updateCutoff(DEFAULTS.cutoff);
+  updateGain(DEFAULTS.gain);
   showToast('Valeurs réinitialisées');
 }
 function toggleSettings(p) {
