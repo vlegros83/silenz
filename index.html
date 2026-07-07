@@ -11,141 +11,129 @@
 <link rel="manifest" href="manifest.json">
 <style>
 :root {
-  --bg:      #0a0a0f; --bg2: #12121a; --bg3: #1a1a26;
-  --border:  #2a2a3a; --accent: #3b82f6; --accent2: #1d4ed8;
-  --text:    #e8e8f0; --muted: #6b6b8a;
-  --success: #22c55e; --warning: #f59e0b; --danger: #ef4444;
-  --radius:  14px;
-  --safe-top: env(safe-area-inset-top, 20px);
-  --safe-bot: env(safe-area-inset-bottom, 20px);
+  --bg:#0a0a0f; --bg2:#12121a; --bg3:#1a1a26;
+  --border:#2a2a3a; --accent:#3b82f6; --accent2:#1d4ed8;
+  --text:#e8e8f0; --muted:#6b6b8a;
+  --success:#22c55e; --warning:#f59e0b; --danger:#ef4444;
+  --radius:14px;
+  --safe-top:env(safe-area-inset-top,20px);
+  --safe-bot:env(safe-area-inset-bottom,20px);
 }
-* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-html, body { height: 100%; background: var(--bg); color: var(--text);
-  font-family: -apple-system, 'SF Pro Display', system-ui, sans-serif; overflow: hidden; }
-#app { display: flex; flex-direction: column; height: 100%;
-  padding-top: var(--safe-top); padding-bottom: var(--safe-bot); }
-#header { padding: 18px 20px 12px; display: flex; align-items: center; justify-content: space-between; }
-#main   { flex: 1; overflow-y: auto; padding: 0 16px 16px; -webkit-overflow-scrolling: touch; }
-#footer { padding: 16px 20px; border-top: 1px solid var(--border); }
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;background:var(--bg);color:var(--text);
+  font-family:-apple-system,'SF Pro Display',system-ui,sans-serif;overflow:hidden;}
+#app{display:flex;flex-direction:column;height:100%;
+  padding-top:var(--safe-top);padding-bottom:var(--safe-bot);}
+#header{padding:18px 20px 12px;display:flex;align-items:center;justify-content:space-between;}
+#main{flex:1;overflow-y:auto;padding:0 16px 16px;-webkit-overflow-scrolling:touch;}
+#footer{padding:16px 20px;border-top:1px solid var(--border);}
 
 /* Logo */
-.logo { display: flex; align-items: center; gap: 10px; }
-.logo-ring { position: relative; width: 36px; height: 36px; }
-.logo-ring svg { position: absolute; top: 0; left: 0; }
-.logo-ring.active .ring1 { animation: pulse-ring 2s ease-in-out infinite; }
-.logo-ring.active .ring2 { animation: pulse-ring 2s ease-in-out infinite 0.4s; }
-@keyframes pulse-ring {
-  0%,100% { opacity:0.3; } 50% { opacity:0.85; }
-}
-.logo-name { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; }
-.logo-name span { color: var(--accent); }
-#status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); transition: background 0.3s; }
-#status-dot.active { background: var(--success); box-shadow: 0 0 8px var(--success); }
+.logo{display:flex;align-items:center;gap:10px;}
+.logo-ring{position:relative;width:36px;height:36px;}
+.logo-ring svg{position:absolute;top:0;left:0;}
+.logo-ring.active .ring1{animation:pulse-ring 2s ease-in-out infinite;}
+.logo-ring.active .ring2{animation:pulse-ring 2s ease-in-out infinite 0.4s;}
+@keyframes pulse-ring{0%,100%{opacity:.3;}50%{opacity:.85;}}
+.logo-name{font-size:22px;font-weight:700;letter-spacing:-.5px;}
+.logo-name span{color:var(--accent);}
+#status-dot{width:8px;height:8px;border-radius:50%;background:var(--muted);
+  transition:background .3s;cursor:pointer;}
+#status-dot.active{background:var(--success);box-shadow:0 0 8px var(--success);}
 
-/* VU mètres */
-.vu-wrap { display: flex; gap: 8px; margin: 8px 0 6px; align-items: center; }
-.vu-label { font-size: 11px; color: var(--muted); width: 42px; text-align: right; letter-spacing: 0.4px; }
-.vu-bar   { flex: 1; height: 6px; background: var(--bg3); border-radius: 3px; overflow: hidden; }
-.vu-fill  { height: 100%; width: 0%; border-radius: 3px; transition: width 0.06s; }
-.vu-in  .vu-fill { background: linear-gradient(90deg, var(--accent), #06b6d4); }
-.vu-out .vu-fill { background: linear-gradient(90deg, var(--success), var(--warning)); }
-.vu-db   { font-size: 11px; color: var(--muted); width: 48px; font-variant-numeric: tabular-nums; }
+/* VU */
+.vu-wrap{display:flex;gap:8px;margin:8px 0 6px;align-items:center;}
+.vu-label{font-size:11px;color:var(--muted);width:42px;text-align:right;}
+.vu-bar{flex:1;height:6px;background:var(--bg3);border-radius:3px;overflow:hidden;}
+.vu-fill{height:100%;width:0%;border-radius:3px;transition:width .06s;}
+.vu-in .vu-fill{background:linear-gradient(90deg,var(--accent),#06b6d4);}
+.vu-out .vu-fill{background:linear-gradient(90deg,var(--success),var(--warning));}
+.vu-db{font-size:11px;color:var(--muted);width:48px;font-variant-numeric:tabular-nums;}
 
-/* Badge réduction */
-#reduction-badge {
-  text-align: center; margin: 10px 0 16px;
-  font-size: 46px; font-weight: 700; letter-spacing: -2px;
-  color: var(--accent); font-variant-numeric: tabular-nums; transition: color 0.3s;
-}
-#reduction-badge.good { color: var(--success); }
-#reduction-badge small { display: block; font-size: 12px; font-weight: 400;
-  color: var(--muted); letter-spacing: 1.5px; margin-top: -4px; }
+/* Badge */
+#reduction-badge{text-align:center;margin:10px 0 16px;
+  font-size:46px;font-weight:700;letter-spacing:-2px;color:var(--accent);
+  font-variant-numeric:tabular-nums;transition:color .3s;}
+#reduction-badge.good{color:var(--success);}
+#reduction-badge small{display:block;font-size:12px;font-weight:400;
+  color:var(--muted);letter-spacing:1.5px;margin-top:-4px;}
 
-/* Section labels */
-.section-label { font-size: 11px; color: var(--muted); letter-spacing: 1.5px;
-  text-transform: uppercase; margin: 18px 0 8px; padding-left: 2px; }
+/* Toggle micro */
+.mic-toggle{display:flex;align-items:center;gap:0;margin:0 0 14px;
+  background:var(--bg3);border-radius:10px;padding:3px;border:1px solid var(--border);}
+.mic-btn{flex:1;padding:8px 4px;border:none;background:transparent;
+  color:var(--muted);font-size:12px;border-radius:8px;cursor:pointer;
+  transition:background .2s,color .2s;font-weight:500;}
+.mic-btn.sel{background:var(--accent);color:#fff;}
+
+/* Section */
+.section-label{font-size:11px;color:var(--muted);letter-spacing:1.5px;
+  text-transform:uppercase;margin:18px 0 8px;padding-left:2px;}
 
 /* Cards */
-.profiles { display: flex; flex-direction: column; gap: 8px; }
-.profile-card { background: var(--bg2); border: 1px solid var(--border);
-  border-radius: var(--radius); overflow: hidden; transition: border-color 0.2s; }
-.profile-card.active-profile { border-color: var(--accent); }
-.profile-card.locked { opacity: 0.45; }
-.profile-header { display: flex; align-items: center; gap: 12px;
-  padding: 14px 16px; cursor: pointer; user-select: none; }
-.profile-card.locked .profile-header { cursor: not-allowed; }
-.profile-icon { width: 38px; height: 38px; border-radius: 10px;
-  display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
-.profile-info { flex: 1; }
-.profile-name { font-size: 15px; font-weight: 600; }
-.profile-desc { font-size: 12px; color: var(--muted); margin-top: 2px; }
-.profile-badge { font-size: 11px; padding: 3px 8px; border-radius: 20px; font-weight: 500; }
-.badge-active  { background: rgba(59,130,246,0.15); color: var(--accent); }
-.badge-locked  { background: var(--bg3); color: var(--muted); }
-.badge-bientot { background: rgba(245,158,11,0.10); color: var(--warning); }
+.profiles{display:flex;flex-direction:column;gap:8px;}
+.profile-card{background:var(--bg2);border:1px solid var(--border);
+  border-radius:var(--radius);overflow:hidden;transition:border-color .2s;}
+.profile-card.active-profile{border-color:var(--accent);}
+.profile-card.locked{opacity:.45;}
+.profile-header{display:flex;align-items:center;gap:12px;
+  padding:14px 16px;cursor:pointer;user-select:none;}
+.profile-card.locked .profile-header{cursor:not-allowed;}
+.profile-icon{width:38px;height:38px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.profile-info{flex:1;}
+.profile-name{font-size:15px;font-weight:600;}
+.profile-desc{font-size:12px;color:var(--muted);margin-top:2px;}
+.profile-badge{font-size:11px;padding:3px 8px;border-radius:20px;font-weight:500;}
+.badge-active{background:rgba(59,130,246,.15);color:var(--accent);}
+.badge-locked{background:var(--bg3);color:var(--muted);}
+.badge-bientot{background:rgba(245,158,11,.10);color:var(--warning);}
 
-.profile-settings { padding: 0 16px 14px; border-top: 1px solid var(--border); }
-.profile-settings.hidden { display: none; }
+.profile-settings{padding:0 16px 14px;border-top:1px solid var(--border);}
+.profile-settings.hidden{display:none;}
 
 /* Contrôles */
-.ctrl { margin-top: 14px; }
-.ctrl-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
-.ctrl-name  { font-size: 13px; font-weight: 500; }
-.ctrl-value { font-size: 12px; color: var(--accent); font-variant-numeric: tabular-nums; }
-input[type=range] {
-  -webkit-appearance: none; appearance: none;
-  width: 100%; height: 4px; border-radius: 2px; background: var(--bg3); cursor: pointer;
-}
-input[type=range]::-webkit-slider-thumb {
-  -webkit-appearance: none; width: 22px; height: 22px; border-radius: 50%;
-  background: var(--accent); cursor: pointer; box-shadow: 0 0 0 3px rgba(59,130,246,0.2);
-}
-.ctrl-hints { display: flex; justify-content: space-between; margin-top: 4px; }
-.ctrl-hints span { font-size: 10px; color: var(--muted); }
+.ctrl{margin-top:14px;}
+.ctrl-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;}
+.ctrl-name{font-size:13px;font-weight:500;}
+.ctrl-value{font-size:12px;color:var(--accent);font-variant-numeric:tabular-nums;}
+input[type=range]{-webkit-appearance:none;appearance:none;
+  width:100%;height:4px;border-radius:2px;background:var(--bg3);cursor:pointer;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;
+  width:22px;height:22px;border-radius:50%;background:var(--accent);
+  cursor:pointer;box-shadow:0 0 0 3px rgba(59,130,246,.2);}
+.ctrl-hints{display:flex;justify-content:space-between;margin-top:4px;}
+.ctrl-hints span{font-size:10px;color:var(--muted);}
 
-/* Bouton reset */
-.btn-reset {
-  display: block; width: 100%; margin-top: 14px; padding: 9px;
-  background: var(--bg3); border: 1px solid var(--border); border-radius: 10px;
-  color: var(--muted); font-size: 12px; cursor: pointer; text-align: center;
-}
-.btn-reset:active { background: var(--border); }
+.btn-reset{display:block;width:100%;margin-top:14px;padding:9px;
+  background:var(--bg3);border:1px solid var(--border);border-radius:10px;
+  color:var(--muted);font-size:12px;cursor:pointer;text-align:center;}
+.btn-reset:active{background:var(--border);}
 
 /* Bouton principal */
-#btn-main {
-  width: 100%; padding: 18px;
-  background: var(--accent); color: #fff; border: none;
-  border-radius: var(--radius); font-size: 17px; font-weight: 600;
-  cursor: pointer; transition: background 0.2s, transform 0.1s;
-}
-#btn-main:active  { transform: scale(0.98); background: var(--accent2); }
-#btn-main.running { background: #1e293b; border: 1px solid var(--danger); color: var(--danger); }
-#btn-main:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+#btn-main{width:100%;padding:18px;background:var(--accent);color:#fff;
+  border:none;border-radius:var(--radius);font-size:17px;font-weight:600;
+  cursor:pointer;transition:background .2s,transform .1s;}
+#btn-main:active{transform:scale(.98);background:var(--accent2);}
+#btn-main.running{background:#1e293b;border:1px solid var(--danger);color:var(--danger);}
+#btn-main:disabled{opacity:.4;cursor:not-allowed;transform:none;}
 
-/* Debug panel */
-#debug-panel {
-  margin-top: 16px; padding: 12px 14px; background: var(--bg2);
-  border: 1px solid var(--border); border-radius: 10px; font-size: 11px;
-  font-family: 'SF Mono', ui-monospace, monospace; color: var(--muted);
-  display: none;
-}
-#debug-panel.visible { display: block; }
-#debug-log { line-height: 1.8; }
-.debug-ok  { color: var(--success); }
-.debug-err { color: var(--danger); }
-.debug-warn { color: var(--warning); }
+/* Debug */
+#debug-panel{margin-top:16px;padding:12px 14px;background:var(--bg2);
+  border:1px solid var(--border);border-radius:10px;font-size:11px;
+  font-family:'SF Mono',ui-monospace,monospace;color:var(--muted);display:none;}
+#debug-panel.visible{display:block;}
+#debug-log{line-height:1.8;max-height:180px;overflow-y:auto;}
+.debug-ok{color:var(--success);} .debug-err{color:var(--danger);} .debug-warn{color:var(--warning);}
 
 /* Toast */
-#toast {
-  position: fixed; bottom: calc(110px + var(--safe-bot));
-  left: 50%; transform: translateX(-50%) translateY(16px);
-  background: var(--bg3); border: 1px solid var(--border);
-  color: var(--text); padding: 10px 18px; border-radius: 30px;
-  font-size: 13px; white-space: nowrap;
-  opacity: 0; transition: opacity 0.25s, transform 0.25s;
-  pointer-events: none; z-index: 100;
-}
-#toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+#toast{position:fixed;bottom:calc(110px + var(--safe-bot));
+  left:50%;transform:translateX(-50%) translateY(16px);
+  background:var(--bg3);border:1px solid var(--border);
+  color:var(--text);padding:10px 18px;border-radius:30px;
+  font-size:13px;white-space:nowrap;
+  opacity:0;transition:opacity .25s,transform .25s;pointer-events:none;z-index:100;}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 </style>
 </head>
 <body>
@@ -161,7 +149,7 @@ input[type=range]::-webkit-slider-thumb {
       </div>
       <div class="logo-name">Silen<span>Z</span></div>
     </div>
-    <div id="status-dot" onclick="toggleDebug()" title="Appui long : debug"></div>
+    <div id="status-dot" onclick="toggleDebug()"></div>
   </header>
 
   <main id="main">
@@ -176,20 +164,27 @@ input[type=range]::-webkit-slider-thumb {
       <span class="vu-db" id="vu-out-db">— dB</span>
     </div>
 
-    <div id="reduction-badge">— dB<small>RÉDUCTION</small></div>
+    <div id="reduction-badge">— dB<small>SIGNAL ANC</small></div>
 
-    <!-- Debug panel (caché par défaut, toggle sur le point de statut) -->
-    <div id="debug-panel">
-      <div id="debug-log">En attente…</div>
+    <div id="debug-panel"><div id="debug-log">En attente…</div></div>
+
+    <!-- Sélecteur micro -->
+    <div class="section-label">Source micro</div>
+    <div class="mic-toggle">
+      <button class="mic-btn" id="btn-mic-iphone" onclick="selectMic('iphone')">📱 iPhone</button>
+      <button class="mic-btn sel" id="btn-mic-ecouteurs" onclick="selectMic('ecouteurs')">🎧 Écouteurs</button>
+    </div>
+    <div id="mic-status" style="font-size:11px;color:var(--muted);margin-bottom:8px;text-align:center;">
+      Micro : détection automatique au démarrage
     </div>
 
+    <!-- Profils -->
     <div class="section-label">Profil</div>
     <div class="profiles">
 
-      <!-- Bureau -->
-      <div class="profile-card active-profile" id="card-bureau">
+      <div class="profile-card active-profile">
         <div class="profile-header" onclick="toggleSettings('bureau')">
-          <div class="profile-icon" style="background:rgba(59,130,246,0.12)">🏢</div>
+          <div class="profile-icon" style="background:rgba(59,130,246,.12)">🏢</div>
           <div class="profile-info">
             <div class="profile-name">Bureau</div>
             <div class="profile-desc">Open space · Climatisation · Brouhaha</div>
@@ -197,24 +192,7 @@ input[type=range]::-webkit-slider-thumb {
           <div class="profile-badge badge-active">Actif</div>
         </div>
         <div class="profile-settings" id="settings-bureau">
-          <div class="ctrl">
-            <div class="ctrl-header">
-              <span class="ctrl-name">Intensité</span>
-              <span class="ctrl-value" id="val-mu">0.30</span>
-            </div>
-            <input type="range" id="slider-mu" min="10" max="50" value="30"
-                   oninput="updateMu(this.value)">
-            <div class="ctrl-hints"><span>Doux</span><span>Fort</span></div>
-          </div>
-          <div class="ctrl">
-            <div class="ctrl-header">
-              <span class="ctrl-name">Couleur du résidu</span>
-              <span class="ctrl-value" id="val-cutoff">400 Hz</span>
-            </div>
-            <input type="range" id="slider-cutoff" min="200" max="800" step="50" value="400"
-                   oninput="updateCutoff(this.value)">
-            <div class="ctrl-hints"><span>Plus sourd</span><span>Plus naturel</span></div>
-          </div>
+
           <div class="ctrl">
             <div class="ctrl-header">
               <span class="ctrl-name">Sensibilité micro</span>
@@ -224,146 +202,202 @@ input[type=range]::-webkit-slider-thumb {
                    oninput="updateGain(this.value)">
             <div class="ctrl-hints"><span>Faible</span><span>Élevée</span></div>
           </div>
+
+          <div class="ctrl">
+            <div class="ctrl-header">
+              <span class="ctrl-name">Intensité filtrage</span>
+              <span class="ctrl-value" id="val-mu">0.30</span>
+            </div>
+            <input type="range" id="slider-mu" min="10" max="50" value="30"
+                   oninput="updateMu(this.value)">
+            <div class="ctrl-hints"><span>Doux</span><span>Fort</span></div>
+          </div>
+
+          <div class="ctrl">
+            <div class="ctrl-header">
+              <span class="ctrl-name">Couleur du résidu</span>
+              <span class="ctrl-value" id="val-cutoff">400 Hz</span>
+            </div>
+            <input type="range" id="slider-cutoff" min="200" max="800" step="50" value="400"
+                   oninput="updateCutoff(this.value)">
+            <div class="ctrl-hints"><span>Plus sourd</span><span>Plus naturel</span></div>
+          </div>
+
           <button class="btn-reset" onclick="resetDefaults()">↺ Réinitialiser les valeurs par défaut</button>
         </div>
       </div>
 
-      <!-- Transports -->
       <div class="section-label" style="margin-top:14px">Transports — bientôt disponibles</div>
       <div class="profile-card locked">
         <div class="profile-header" onclick="showLocked('Bus')">
-          <div class="profile-icon" style="background:rgba(245,158,11,0.08)">🚌</div>
-          <div class="profile-info">
-            <div class="profile-name">Bus</div>
-            <div class="profile-desc">Moteur diesel · Vibrations caisse</div>
-          </div>
+          <div class="profile-icon" style="background:rgba(245,158,11,.08)">🚌</div>
+          <div class="profile-info"><div class="profile-name">Bus</div>
+            <div class="profile-desc">Moteur diesel · Vibrations caisse</div></div>
           <div class="profile-badge badge-bientot">Bientôt</div>
         </div>
       </div>
       <div class="profile-card locked" style="margin-top:8px">
         <div class="profile-header" onclick="showLocked('Métro')">
-          <div class="profile-icon" style="background:rgba(245,158,11,0.08)">🚇</div>
-          <div class="profile-info">
-            <div class="profile-name">Métro</div>
-            <div class="profile-desc">Roulement sur rails · Crissements</div>
-          </div>
+          <div class="profile-icon" style="background:rgba(245,158,11,.08)">🚇</div>
+          <div class="profile-info"><div class="profile-name">Métro</div>
+            <div class="profile-desc">Roulement sur rails · Crissements</div></div>
           <div class="profile-badge badge-bientot">Bientôt</div>
         </div>
       </div>
       <div class="profile-card locked" style="margin-top:8px">
         <div class="profile-header" onclick="showLocked('Train')">
-          <div class="profile-icon" style="background:rgba(245,158,11,0.08)">🚄</div>
-          <div class="profile-info">
-            <div class="profile-name">Train</div>
-            <div class="profile-desc">Climatisation · Roulement amorti</div>
-          </div>
+          <div class="profile-icon" style="background:rgba(245,158,11,.08)">🚄</div>
+          <div class="profile-info"><div class="profile-name">Train</div>
+            <div class="profile-desc">Climatisation · Roulement amorti</div></div>
           <div class="profile-badge badge-bientot">Bientôt</div>
         </div>
       </div>
 
-      <!-- Moto -->
       <div class="section-label" style="margin-top:14px">Moto</div>
       <div class="profile-card locked">
         <div class="profile-header" onclick="showLocked('Moto')">
-          <div class="profile-icon" style="background:rgba(239,68,68,0.08)">🏍️</div>
-          <div class="profile-info">
-            <div class="profile-name">Moto · BMW F800R</div>
-            <div class="profile-desc">Pitch-tracking · Garde-fous sécurité</div>
-          </div>
+          <div class="profile-icon" style="background:rgba(239,68,68,.08)">🏍️</div>
+          <div class="profile-info"><div class="profile-name">Moto · BMW F800R</div>
+            <div class="profile-desc">Pitch-tracking · Garde-fous sécurité</div></div>
           <div class="profile-badge badge-locked">Prochainement</div>
         </div>
       </div>
-
     </div>
   </main>
 
   <footer id="footer">
-    <button id="btn-main" onclick="toggleProcessing()">
-      Démarrer la réduction de bruit
-    </button>
+    <button id="btn-main" onclick="toggleProcessing()">Démarrer la réduction de bruit</button>
   </footer>
 </div>
 <div id="toast"></div>
 
 <script>
-const DEFAULTS = { mu: 30, cutoff: 400, gain: 10 };
+const DEFAULTS = { mu:30, cutoff:400, gain:10 };
 const state = {
-  running: false, mu: 0.3, cutoff: 400,
-  audioCtx: null, stream: null, source: null,
-  worklet: null, lpFilter: null,
-  analyserIn: null, analyserOut: null, animFrame: null,
-  rmsHistory: { in: [], out: [] },
-  inputGain: null,
-  gainValue: 10,
+  running:false, mu:0.3, cutoff:400, gainValue:10,
+  micMode:'ecouteurs',   // 'iphone' | 'ecouteurs'
+  devices:[],
+  audioCtx:null, stream:null, source:null,
+  inputGain:null, worklet:null, lpFilter:null,
+  analyserIn:null, analyserOut:null, animFrame:null,
+  rmsHistory:{ in:[], out:[] },
 };
 
-// ── Debug ─────────────────────────────────────────────────
+// ── Debug ──────────────────────────────────────────────────
 let debugVisible = false;
-function toggleDebug() {
+function toggleDebug(){
   debugVisible = !debugVisible;
   document.getElementById('debug-panel').classList.toggle('visible', debugVisible);
 }
-function dbg(msg, type='') {
+function dbg(msg, type=''){
   const log = document.getElementById('debug-log');
   const line = document.createElement('div');
   line.className = type ? 'debug-' + type : '';
   line.textContent = '› ' + msg;
   log.appendChild(line);
   log.scrollTop = log.scrollHeight;
-  if (log.children.length > 30) log.removeChild(log.firstChild);
+  if(log.children.length > 40) log.removeChild(log.firstChild);
   console.log('[SilenZ]', msg);
 }
 
-// ── Audio ─────────────────────────────────────────────────
-async function toggleProcessing() {
-  if (state.running) { stopProcessing(); return; }
+// ── Sélecteur micro ────────────────────────────────────────
+function selectMic(mode){
+  state.micMode = mode;
+  document.getElementById('btn-mic-iphone').classList.toggle('sel', mode==='iphone');
+  document.getElementById('btn-mic-ecouteurs').classList.toggle('sel', mode==='ecouteurs');
+  document.getElementById('mic-status').textContent =
+    mode==='iphone' ? 'Micro iPhone — capte mieux le bruit ambiant' :
+                      'Micro écouteurs — capte depuis l\'oreille';
+  if(state.running){ stopProcessing(); setTimeout(startProcessing, 300); }
+}
+
+async function getMicConstraints(){
+  // Toujours désactiver les traitements automatiques iOS
+  const base = { echoCancellation:false, noiseSuppression:false, autoGainControl:false, sampleRate:48000 };
+
+  if(state.micMode === 'iphone'){
+    // Essayer de trouver le micro iPhone parmi les devices listés
+    if(state.devices.length === 0){
+      try {
+        const devs = await navigator.mediaDevices.enumerateDevices();
+        state.devices = devs.filter(d => d.kind === 'audioinput');
+        dbg('Micros disponibles : ' + state.devices.map(d=>d.label||d.deviceId.slice(0,8)).join(', '));
+      } catch(e){ dbg('Enum devices : ' + e.message, 'warn'); }
+    }
+    // Chercher un micro "built-in" / "iPhone" / "Bottom" / "Front"
+    const iphone = state.devices.find(d =>
+      /built.in|iphone|bottom|front|internal/i.test(d.label) &&
+      !/headset|earphone|écouteur/i.test(d.label)
+    );
+    if(iphone){
+      dbg('Micro iPhone sélectionné : ' + iphone.label, 'ok');
+      return { audio: { ...base, deviceId: { exact: iphone.deviceId } } };
+    }
+    // Fallback : prendre le premier qui n'est pas "headset"
+    const fallback = state.devices.find(d => !/headset|earphone/i.test(d.label));
+    if(fallback){
+      dbg('Micro fallback : ' + (fallback.label || fallback.deviceId.slice(0,8)), 'warn');
+      return { audio: { ...base, deviceId: { exact: fallback.deviceId } } };
+    }
+    dbg('Impossible d\'isoler micro iPhone — micro par défaut utilisé', 'warn');
+  }
+  return { audio: base };
+}
+
+// ── Audio ──────────────────────────────────────────────────
+async function toggleProcessing(){
+  if(state.running){ stopProcessing(); return; }
   await startProcessing();
 }
 
-async function startProcessing() {
+async function startProcessing(){
   const btn = document.getElementById('btn-main');
-  btn.disabled = true;
-  btn.textContent = 'Démarrage…';
-  if (!debugVisible) toggleDebug(); // ouvrir debug auto au 1er démarrage
+  btn.disabled = true; btn.textContent = 'Démarrage…';
+  if(!debugVisible) toggleDebug();
 
   try {
     dbg('Création AudioContext…');
     state.audioCtx = new (window.AudioContext || window.webkitAudioContext)({
-      sampleRate: 48000,
-      latencyHint: 'interactive',
+      sampleRate: 48000, latencyHint: 'interactive',
     });
     await state.audioCtx.resume();
-    dbg('AudioContext OK — SR:' + state.audioCtx.sampleRate + 'Hz — latence base:' +
-        Math.round((state.audioCtx.baseLatency || 0) * 1000) + 'ms', 'ok');
+    dbg('AudioContext OK — SR:' + state.audioCtx.sampleRate +
+        'Hz — latence:' + Math.round((state.audioCtx.baseLatency||0)*1000) + 'ms', 'ok');
 
-    dbg('Demande accès micro…');
-    state.stream = await navigator.mediaDevices.getUserMedia({
-      audio: {
-        echoCancellation:  false,
-        noiseSuppression:  false,
-        autoGainControl:   false,
-        sampleRate:        48000,
-      }
-    });
+    dbg('Demande accès micro (' + state.micMode + ')…');
+    const constraints = await getMicConstraints();
+    state.stream = await navigator.mediaDevices.getUserMedia(constraints);
+
+    // Énumérer après permission (iOS ne donne les labels qu'après getUserMedia)
+    if(state.devices.length === 0){
+      const devs = await navigator.mediaDevices.enumerateDevices();
+      state.devices = devs.filter(d => d.kind === 'audioinput');
+    }
     const track = state.stream.getAudioTracks()[0];
-    dbg('Micro OK — ' + (track.label || 'label inconnu'), 'ok');
+    const trackSettings = track.getSettings ? track.getSettings() : {};
+    dbg('Micro OK — ' + (track.label||'label inconnu'), 'ok');
+    document.getElementById('mic-status').textContent = '🎙 ' + (track.label || 'Micro actif');
 
     dbg('Chargement AudioWorklet…');
-    const workletURL = new URL('./nlms-worklet.js', location.href).href;
-    await state.audioCtx.audioWorklet.addModule(workletURL);
+    await state.audioCtx.audioWorklet.addModule(new URL('./nlms-worklet.js', location.href).href);
     dbg('AudioWorklet chargé', 'ok');
 
-    const latMs = Math.round(((state.audioCtx.baseLatency || 0.02) +
-                               (state.audioCtx.outputLatency || 0.02)) * 1000);
+    const latMs = Math.round(((state.audioCtx.baseLatency||0.005) +
+                               (state.audioCtx.outputLatency||0.005)) * 1000);
 
     state.worklet = new AudioWorkletNode(state.audioCtx, 'nlms-processor', {
-      processorOptions: { filterLength: 256, mu: state.mu, latencyMs: latMs },
-      numberOfInputs: 1, numberOfOutputs: 1, outputChannelCount: [1],
+      processorOptions:{ filterLength:256, mu:state.mu, latencyMs:Math.max(latMs,5) },
+      numberOfInputs:1, numberOfOutputs:1, outputChannelCount:[1],
     });
     state.worklet.port.onmessage = onWorkletStats;
-    state.worklet.onprocessorerror = (e) => dbg('Worklet error: ' + e.message, 'err');
-    dbg('NLMSProcessor créé — latence:' + latMs + 'ms', 'ok');
+    state.worklet.onprocessorerror = e => dbg('Worklet error: '+e.message,'err');
+    dbg('NLMSProcessor créé — délai interne:' + Math.max(latMs,5) + 'ms', 'ok');
 
+    // Gain d'entrée
+    state.inputGain = state.audioCtx.createGain();
+    state.inputGain.gain.value = state.gainValue;
+
+    // Filtre passe-bas sur la sortie ANC
     state.lpFilter = state.audioCtx.createBiquadFilter();
     state.lpFilter.type = 'lowpass';
     state.lpFilter.frequency.value = state.cutoff;
@@ -371,15 +405,10 @@ async function startProcessing() {
 
     state.analyserIn  = state.audioCtx.createAnalyser();
     state.analyserOut = state.audioCtx.createAnalyser();
-    [state.analyserIn, state.analyserOut].forEach(a => { a.fftSize = 512; });
+    state.analyserIn.fftSize = state.analyserOut.fftSize = 512;
 
-    // Chaîne : micro → analyserIn → worklet(NLMS) → lpFilter → analyserOut → sortie
+    // Chaîne : source → gain → analyserIn → worklet(NLMS, sort -y) → lpFilter → analyserOut → écouteurs
     state.source = state.audioCtx.createMediaStreamSource(state.stream);
-
-    // Gain d'entrée (boost du signal micro)
-    state.inputGain = state.audioCtx.createGain();
-    state.inputGain.gain.value = state.gainValue;
-
     state.source.connect(state.inputGain);
     state.inputGain.connect(state.analyserIn);
     state.analyserIn.connect(state.worklet);
@@ -387,151 +416,134 @@ async function startProcessing() {
     state.lpFilter.connect(state.analyserOut);
     state.analyserOut.connect(state.audioCtx.destination);
 
-    dbg('Chaîne audio connectée ✓', 'ok');
-    dbg('Gain micro : x' + state.gainValue + ' (+' + Math.round(20*Math.log10(state.gainValue)) + 'dB)', 'ok');
+    dbg('Chaîne connectée ✓ — gain:+' + Math.round(20*Math.log10(state.gainValue)) + 'dB', 'ok');
+    dbg('Signal ANC (-y) en route vers écouteurs', 'ok');
     state.running = true;
     updateUI(true);
     startVULoop();
 
-  } catch (err) {
+  } catch(err){
     dbg('ERREUR : ' + err.name + ' — ' + err.message, 'err');
-    const msg = err.name === 'NotAllowedError'
-      ? 'Accès micro refusé — autorisez dans Réglages > Safari'
-      : err.name === 'NotFoundError'
-      ? 'Aucun micro trouvé'
-      : 'Erreur : ' + err.message;
+    const msg = err.name==='NotAllowedError' ? 'Accès micro refusé — Réglages > Safari > Micro' :
+                err.name==='NotFoundError'    ? 'Aucun micro trouvé' : 'Erreur : ' + err.message;
     showToast(msg);
-    btn.disabled = false;
-    btn.textContent = 'Démarrer la réduction de bruit';
-    if (state.audioCtx) { state.audioCtx.close(); state.audioCtx = null; }
+    btn.disabled=false; btn.textContent='Démarrer la réduction de bruit';
+    if(state.audioCtx){ state.audioCtx.close(); state.audioCtx=null; }
   }
 }
 
-function stopProcessing() {
+function stopProcessing(){
   state.running = false;
   cancelAnimationFrame(state.animFrame);
-  try {
-    state.analyserOut?.disconnect();
-    state.lpFilter?.disconnect();
-    state.worklet?.disconnect();
-    state.analyserIn?.disconnect();
-    state.inputGain?.disconnect();
-    state.source?.disconnect();
-  } catch(e) {}
-  state.stream?.getTracks().forEach(t => t.stop());
+  try{
+    state.analyserOut?.disconnect(); state.lpFilter?.disconnect();
+    state.worklet?.disconnect(); state.analyserIn?.disconnect();
+    state.inputGain?.disconnect(); state.source?.disconnect();
+  }catch(e){}
+  state.stream?.getTracks().forEach(t=>t.stop());
   state.audioCtx?.close();
-  state.rmsHistory.in = []; state.rmsHistory.out = [];
+  state.rmsHistory.in=[]; state.rmsHistory.out=[];
   updateUI(false);
   dbg('Arrêté');
 }
 
-function onWorkletStats(e) {
+function onWorkletStats(e){
   state.rmsHistory.in.push(e.data.rmsIn);
   state.rmsHistory.out.push(e.data.rmsOut);
-  if (state.rmsHistory.in.length > 20) {
-    state.rmsHistory.in.shift();
-    state.rmsHistory.out.shift();
+  if(state.rmsHistory.in.length > 20){
+    state.rmsHistory.in.shift(); state.rmsHistory.out.shift();
   }
 }
 
-// ── VU + badge ────────────────────────────────────────────
-function startVULoop() {
-  const bufIn  = new Float32Array(state.analyserIn.fftSize);
-  const bufOut = new Float32Array(state.analyserOut.fftSize);
-  function loop() {
-    if (!state.running) return;
-    state.analyserIn.getFloatTimeDomainData(bufIn);
-    state.analyserOut.getFloatTimeDomainData(bufOut);
-    const rmsIn  = Math.sqrt(bufIn.reduce((s,v)  => s+v*v, 0) / bufIn.length);
-    const rmsOut = Math.sqrt(bufOut.reduce((s,v) => s+v*v, 0) / bufOut.length);
-    const dbIn   = rmsIn  > 1e-5 ? 20*Math.log10(rmsIn)  : -60;
-    const dbOut  = rmsOut > 1e-5 ? 20*Math.log10(rmsOut) : -60;
-    document.getElementById('vu-in-fill').style.width  = Math.max(0, Math.min(100, (dbIn +60)/60*100)) + '%';
-    document.getElementById('vu-out-fill').style.width = Math.max(0, Math.min(100, (dbOut+60)/60*100)) + '%';
-    document.getElementById('vu-in-db').textContent    = dbIn.toFixed(1)  + ' dB';
-    document.getElementById('vu-out-db').textContent   = dbOut.toFixed(1) + ' dB';
+// ── VU loop ────────────────────────────────────────────────
+function startVULoop(){
+  const bI=new Float32Array(512), bO=new Float32Array(512);
+  function loop(){
+    if(!state.running) return;
+    state.analyserIn.getFloatTimeDomainData(bI);
+    state.analyserOut.getFloatTimeDomainData(bO);
+    const rI=Math.sqrt(bI.reduce((s,v)=>s+v*v,0)/bI.length);
+    const rO=Math.sqrt(bO.reduce((s,v)=>s+v*v,0)/bO.length);
+    const dI=rI>1e-5?20*Math.log10(rI):-60;
+    const dO=rO>1e-5?20*Math.log10(rO):-60;
+    document.getElementById('vu-in-fill').style.width  = Math.max(0,Math.min(100,(dI+60)/60*100))+'%';
+    document.getElementById('vu-out-fill').style.width = Math.max(0,Math.min(100,(dO+60)/60*100))+'%';
+    document.getElementById('vu-in-db').textContent    = dI.toFixed(1)+' dB';
+    document.getElementById('vu-out-db').textContent   = dO.toFixed(1)+' dB';
 
-    if (state.rmsHistory.in.length > 3) {
-      const n    = Math.min(state.rmsHistory.in.length, 10);
-      const avgIn  = state.rmsHistory.in.slice(-n).reduce((a,b)=>a+b,0)/n;
-      const avgOut = state.rmsHistory.out.slice(-n).reduce((a,b)=>a+b,0)/n;
-      if (avgIn > 1e-6) {
-        const db = 20*Math.log10(avgOut/avgIn);
-        const badge = document.getElementById('reduction-badge');
-        badge.childNodes[0].textContent = '−' + Math.abs(db).toFixed(1) + ' dB';
-        badge.className = db < -8 ? 'good' : '';
+    if(state.rmsHistory.in.length>3){
+      const n=Math.min(state.rmsHistory.in.length,10);
+      const aI=state.rmsHistory.in.slice(-n).reduce((a,b)=>a+b,0)/n;
+      const aO=state.rmsHistory.out.slice(-n).reduce((a,b)=>a+b,0)/n;
+      if(aI>1e-6){
+        const ratio=20*Math.log10(aO/aI);
+        const badge=document.getElementById('reduction-badge');
+        badge.childNodes[0].textContent=(ratio>=0?'+':'')+ratio.toFixed(1)+' dB';
+        badge.className=ratio>-3?'good':'';
       }
     }
-    state.animFrame = requestAnimationFrame(loop);
+    state.animFrame=requestAnimationFrame(loop);
   }
   loop();
 }
 
-// ── Contrôles ─────────────────────────────────────────────
-function updateMu(v) {
-  state.mu = v / 100;
-  document.getElementById('val-mu').textContent = state.mu.toFixed(2);
-  state.worklet?.port.postMessage({ mu: state.mu });
+// ── Contrôles ──────────────────────────────────────────────
+function updateGain(v){
+  state.gainValue=parseFloat(v);
+  const db=Math.round(20*Math.log10(state.gainValue));
+  document.getElementById('val-gain').textContent='+'+db+' dB';
+  if(state.inputGain)
+    state.inputGain.gain.setTargetAtTime(state.gainValue,state.audioCtx.currentTime,.05);
 }
-function updateCutoff(v) {
-  state.cutoff = parseInt(v);
-  document.getElementById('val-cutoff').textContent = state.cutoff + ' Hz';
-  if (state.lpFilter)
-    state.lpFilter.frequency.setTargetAtTime(state.cutoff, state.audioCtx.currentTime, 0.05);
+function updateMu(v){
+  state.mu=v/100;
+  document.getElementById('val-mu').textContent=state.mu.toFixed(2);
+  state.worklet?.port.postMessage({mu:state.mu});
 }
-function updateGain(v) {
-  state.gainValue = parseFloat(v);
-  const db = Math.round(20 * Math.log10(state.gainValue));
-  document.getElementById('val-gain').textContent = '+' + db + ' dB';
-  if (state.inputGain)
-    state.inputGain.gain.setTargetAtTime(state.gainValue, state.audioCtx.currentTime, 0.05);
+function updateCutoff(v){
+  state.cutoff=parseInt(v);
+  document.getElementById('val-cutoff').textContent=state.cutoff+' Hz';
+  if(state.lpFilter)
+    state.lpFilter.frequency.setTargetAtTime(state.cutoff,state.audioCtx.currentTime,.05);
 }
-function resetDefaults() {
-  document.getElementById('slider-mu').value     = DEFAULTS.mu;
-  document.getElementById('slider-cutoff').value = DEFAULTS.cutoff;
-  document.getElementById('slider-gain').value   = DEFAULTS.gain;
-  updateMu(DEFAULTS.mu);
-  updateCutoff(DEFAULTS.cutoff);
-  updateGain(DEFAULTS.gain);
+function resetDefaults(){
+  document.getElementById('slider-gain').value=DEFAULTS.gain;
+  document.getElementById('slider-mu').value=DEFAULTS.mu;
+  document.getElementById('slider-cutoff').value=DEFAULTS.cutoff;
+  updateGain(DEFAULTS.gain); updateMu(DEFAULTS.mu); updateCutoff(DEFAULTS.cutoff);
   showToast('Valeurs réinitialisées');
 }
-function toggleSettings(p) {
-  document.getElementById('settings-' + p)?.classList.toggle('hidden');
-}
-function showLocked(n) { showToast(n + ' — disponible prochainement'); }
+function toggleSettings(p){ document.getElementById('settings-'+p)?.classList.toggle('hidden'); }
+function showLocked(n){ showToast(n+' — disponible prochainement'); }
 
-// ── UI ────────────────────────────────────────────────────
-function updateUI(running) {
-  const btn  = document.getElementById('btn-main');
-  const badge = document.getElementById('reduction-badge');
-  btn.disabled   = false;
-  btn.textContent = running ? 'Arrêter' : 'Démarrer la réduction de bruit';
-  btn.className  = running ? 'running' : '';
-  document.getElementById('status-dot').className  = running ? 'active' : '';
-  document.getElementById('logo-ring').className   = running ? 'logo-ring active' : 'logo-ring';
-  if (!running) {
-    badge.childNodes[0].textContent = '— dB';
-    badge.className = '';
-    ['vu-in-fill','vu-out-fill'].forEach(id => document.getElementById(id).style.width='0%');
-    ['vu-in-db','vu-out-db'].forEach(id => document.getElementById(id).textContent='— dB');
+// ── UI ─────────────────────────────────────────────────────
+function updateUI(running){
+  const btn=document.getElementById('btn-main');
+  btn.disabled=false;
+  btn.textContent=running?'Arrêter':'Démarrer la réduction de bruit';
+  btn.className=running?'running':'';
+  document.getElementById('status-dot').className=running?'active':'';
+  document.getElementById('logo-ring').className=running?'logo-ring active':'logo-ring';
+  if(!running){
+    const b=document.getElementById('reduction-badge');
+    b.childNodes[0].textContent='— dB'; b.className='';
+    ['vu-in-fill','vu-out-fill'].forEach(id=>document.getElementById(id).style.width='0%');
+    ['vu-in-db','vu-out-db'].forEach(id=>document.getElementById(id).textContent='— dB');
   }
 }
-
 let toastTimer;
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+  toastTimer=setTimeout(()=>t.classList.remove('show'),3000);
 }
 
-// ── Init ──────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', () => {
-  updateMu(DEFAULTS.mu);
-  updateCutoff(DEFAULTS.cutoff);
-  if ('serviceWorker' in navigator)
-    navigator.serviceWorker.register('./sw.js').catch(e => dbg('SW: ' + e, 'warn'));
+// ── Init ───────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded',()=>{
+  updateGain(DEFAULTS.gain); updateMu(DEFAULTS.mu); updateCutoff(DEFAULTS.cutoff);
+  if('serviceWorker' in navigator)
+    navigator.serviceWorker.register('./sw.js').catch(e=>dbg('SW:'+e,'warn'));
 });
 </script>
 </body>

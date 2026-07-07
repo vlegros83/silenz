@@ -16,8 +16,8 @@ class NLMSProcessor extends AudioWorkletProcessor {
 
     this.statCount = 0;
     this.statWin   = 4096;
-    this.sumSqIn   = 0;
-    this.sumSqOut  = 0;
+    this.sumSqX    = 0;
+    this.sumSqY    = 0;
 
     this.port.onmessage = (e) => {
       if (e.data.mu !== undefined) this.mu = e.data.mu;
@@ -32,12 +32,15 @@ class NLMSProcessor extends AudioWorkletProcessor {
     for (let i = 0; i < inp.length; i++) {
       const x = inp[i];
 
+      // Signal retardé = approximation du bruit à l'oreille
       const d = this.delayBuf[this.delayIdx];
       this.delayBuf[this.delayIdx] = x;
       this.delayIdx = (this.delayIdx + 1) % this.delayN;
 
+      // Mise à jour tampon circulaire
       this.buf[this.bi] = x;
 
+      // Prédiction NLMS
       let y = 0, power = this.eps;
       for (let j = 0; j < this.FL; j++) {
         const idx = (this.bi - j + this.FL) % this.FL;
@@ -45,6 +48,7 @@ class NLMSProcessor extends AudioWorkletProcessor {
         power += this.buf[idx] * this.buf[idx];
       }
 
+      // Erreur pour l'adaptation du filtre
       const e    = d - y;
       const step = this.mu / power;
       for (let j = 0; j < this.FL; j++) {
@@ -53,16 +57,21 @@ class NLMSProcessor extends AudioWorkletProcessor {
       }
 
       this.bi = (this.bi + 1) % this.FL;
-      out[i]  = e;
 
-      this.sumSqIn  += x * x;
-      this.sumSqOut += e * e;
+      // ── CORRECTION CLÉ : on émet -y (prédiction inversée) ──────────
+      // Le signal ANC à injecter dans les écouteurs est l'OPPOSÉ de ce
+      // qu'on prédit arriver à l'oreille — pas le résidu e.
+      out[i] = -y;
+
+      // Stats : puissance entrée vs puissance signal ANC produit
+      this.sumSqX += x * x;
+      this.sumSqY += y * y;
       if (++this.statCount >= this.statWin) {
         this.port.postMessage({
-          rmsIn:  Math.sqrt(this.sumSqIn  / this.statWin),
-          rmsOut: Math.sqrt(this.sumSqOut / this.statWin),
+          rmsIn:  Math.sqrt(this.sumSqX / this.statWin),
+          rmsOut: Math.sqrt(this.sumSqY / this.statWin),
         });
-        this.sumSqIn = this.sumSqOut = this.statCount = 0;
+        this.sumSqX = this.sumSqY = this.statCount = 0;
       }
     }
     return true;
