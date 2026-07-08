@@ -10,15 +10,10 @@
 <title>SilenZ</title>
 <link rel="manifest" href="manifest.json">
 <style>
-:root {
-  --bg:#0a0a0f; --bg2:#12121a; --bg3:#1a1a26;
-  --border:#2a2a3a; --accent:#3b82f6; --accent2:#1d4ed8;
-  --text:#e8e8f0; --muted:#6b6b8a;
-  --success:#22c55e; --warning:#f59e0b; --danger:#ef4444;
-  --radius:14px;
-  --safe-top:env(safe-area-inset-top,20px);
-  --safe-bot:env(safe-area-inset-bottom,20px);
-}
+:root{--bg:#0a0a0f;--bg2:#12121a;--bg3:#1a1a26;--border:#2a2a3a;
+  --accent:#3b82f6;--accent2:#1d4ed8;--text:#e8e8f0;--muted:#6b6b8a;
+  --success:#22c55e;--warning:#f59e0b;--danger:#ef4444;--radius:14px;
+  --safe-top:env(safe-area-inset-top,20px);--safe-bot:env(safe-area-inset-bottom,20px);}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 html,body{height:100%;background:var(--bg);color:var(--text);
   font-family:-apple-system,'SF Pro Display',system-ui,sans-serif;overflow:hidden;}
@@ -27,22 +22,22 @@ html,body{height:100%;background:var(--bg);color:var(--text);
 #header{padding:18px 20px 12px;display:flex;align-items:center;justify-content:space-between;}
 #main{flex:1;overflow-y:auto;padding:0 16px 16px;-webkit-overflow-scrolling:touch;}
 #footer{padding:16px 20px;border-top:1px solid var(--border);}
-
-/* Logo */
 .logo{display:flex;align-items:center;gap:10px;}
 .logo-ring{position:relative;width:36px;height:36px;}
 .logo-ring svg{position:absolute;top:0;left:0;}
 .logo-ring.active .ring1{animation:pulse-ring 2s ease-in-out infinite;}
-.logo-ring.active .ring2{animation:pulse-ring 2s ease-in-out infinite 0.4s;}
+.logo-ring.active .ring2{animation:pulse-ring 2s ease-in-out infinite .4s;}
 @keyframes pulse-ring{0%,100%{opacity:.3;}50%{opacity:.85;}}
 .logo-name{font-size:22px;font-weight:700;letter-spacing:-.5px;}
 .logo-name span{color:var(--accent);}
 #status-dot{width:8px;height:8px;border-radius:50%;background:var(--muted);
   transition:background .3s;cursor:pointer;}
 #status-dot.active{background:var(--success);box-shadow:0 0 8px var(--success);}
+#gate-dot{width:8px;height:8px;border-radius:50%;background:var(--success);
+  transition:background .1s;display:inline-block;}
+#gate-dot.muted{background:var(--warning);}
 
-/* VU */
-.vu-wrap{display:flex;gap:8px;margin:8px 0 6px;align-items:center;}
+.vu-wrap{display:flex;gap:8px;margin:6px 0;align-items:center;}
 .vu-label{font-size:11px;color:var(--muted);width:42px;text-align:right;}
 .vu-bar{flex:1;height:6px;background:var(--bg3);border-radius:3px;overflow:hidden;}
 .vu-fill{height:100%;width:0%;border-radius:3px;transition:width .06s;}
@@ -50,27 +45,25 @@ html,body{height:100%;background:var(--bg);color:var(--text);
 .vu-out .vu-fill{background:linear-gradient(90deg,var(--success),var(--warning));}
 .vu-db{font-size:11px;color:var(--muted);width:48px;font-variant-numeric:tabular-nums;}
 
-/* Badge */
-#reduction-badge{text-align:center;margin:10px 0 16px;
-  font-size:46px;font-weight:700;letter-spacing:-2px;color:var(--accent);
-  font-variant-numeric:tabular-nums;transition:color .3s;}
+#reduction-badge{text-align:center;margin:10px 0 4px;font-size:46px;font-weight:700;
+  letter-spacing:-2px;color:var(--accent);font-variant-numeric:tabular-nums;transition:color .3s;}
 #reduction-badge.good{color:var(--success);}
 #reduction-badge small{display:block;font-size:12px;font-weight:400;
   color:var(--muted);letter-spacing:1.5px;margin-top:-4px;}
 
-/* Toggle micro */
-.mic-toggle{display:flex;align-items:center;gap:0;margin:0 0 14px;
+/* Gate indicator */
+#gate-status{text-align:center;margin:4px 0 14px;font-size:11px;color:var(--muted);}
+
+.mic-toggle{display:flex;align-items:center;gap:0;
   background:var(--bg3);border-radius:10px;padding:3px;border:1px solid var(--border);}
 .mic-btn{flex:1;padding:8px 4px;border:none;background:transparent;
   color:var(--muted);font-size:12px;border-radius:8px;cursor:pointer;
   transition:background .2s,color .2s;font-weight:500;}
 .mic-btn.sel{background:var(--accent);color:#fff;}
 
-/* Section */
 .section-label{font-size:11px;color:var(--muted);letter-spacing:1.5px;
-  text-transform:uppercase;margin:18px 0 8px;padding-left:2px;}
+  text-transform:uppercase;margin:16px 0 8px;padding-left:2px;}
 
-/* Cards */
 .profiles{display:flex;flex-direction:column;gap:8px;}
 .profile-card{background:var(--bg2);border:1px solid var(--border);
   border-radius:var(--radius);overflow:hidden;transition:border-color .2s;}
@@ -88,12 +81,15 @@ html,body{height:100%;background:var(--bg);color:var(--text);
 .badge-active{background:rgba(59,130,246,.15);color:var(--accent);}
 .badge-locked{background:var(--bg3);color:var(--muted);}
 .badge-bientot{background:rgba(245,158,11,.10);color:var(--warning);}
-
 .profile-settings{padding:0 16px 14px;border-top:1px solid var(--border);}
 .profile-settings.hidden{display:none;}
 
-/* Contrôles */
+/* Groupe de contrôles avec séparateur */
+.ctrl-group{margin-top:16px;padding-top:16px;border-top:1px solid var(--border);}
+.ctrl-group-label{font-size:10px;color:var(--muted);letter-spacing:1.2px;
+  text-transform:uppercase;margin-bottom:10px;}
 .ctrl{margin-top:14px;}
+.ctrl:first-child{margin-top:0;}
 .ctrl-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;}
 .ctrl-name{font-size:13px;font-weight:500;}
 .ctrl-value{font-size:12px;color:var(--accent);font-variant-numeric:tabular-nums;}
@@ -105,12 +101,25 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;
 .ctrl-hints{display:flex;justify-content:space-between;margin-top:4px;}
 .ctrl-hints span{font-size:10px;color:var(--muted);}
 
+/* Toggle switch */
+.toggle-row{display:flex;align-items:center;justify-content:space-between;
+  margin-top:14px;padding:10px 0;}
+.toggle-label{font-size:13px;font-weight:500;}
+.toggle-desc{font-size:11px;color:var(--muted);margin-top:2px;}
+.switch{position:relative;width:44px;height:26px;flex-shrink:0;}
+.switch input{opacity:0;width:0;height:0;}
+.slider-sw{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;
+  background:var(--bg3);border-radius:13px;transition:.3s;border:1px solid var(--border);}
+.slider-sw:before{position:absolute;content:"";height:20px;width:20px;
+  left:2px;bottom:2px;background:var(--muted);border-radius:50%;transition:.3s;}
+input:checked+.slider-sw{background:var(--accent);border-color:var(--accent);}
+input:checked+.slider-sw:before{transform:translateX(18px);background:#fff;}
+
 .btn-reset{display:block;width:100%;margin-top:14px;padding:9px;
   background:var(--bg3);border:1px solid var(--border);border-radius:10px;
   color:var(--muted);font-size:12px;cursor:pointer;text-align:center;}
 .btn-reset:active{background:var(--border);}
 
-/* Bouton principal */
 #btn-main{width:100%;padding:18px;background:var(--accent);color:#fff;
   border:none;border-radius:var(--radius);font-size:17px;font-weight:600;
   cursor:pointer;transition:background .2s,transform .1s;}
@@ -118,15 +127,13 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;
 #btn-main.running{background:#1e293b;border:1px solid var(--danger);color:var(--danger);}
 #btn-main:disabled{opacity:.4;cursor:not-allowed;transform:none;}
 
-/* Debug */
 #debug-panel{margin-top:16px;padding:12px 14px;background:var(--bg2);
   border:1px solid var(--border);border-radius:10px;font-size:11px;
   font-family:'SF Mono',ui-monospace,monospace;color:var(--muted);display:none;}
 #debug-panel.visible{display:block;}
-#debug-log{line-height:1.8;max-height:180px;overflow-y:auto;}
+#debug-log{line-height:1.8;max-height:160px;overflow-y:auto;}
 .debug-ok{color:var(--success);} .debug-err{color:var(--danger);} .debug-warn{color:var(--warning);}
 
-/* Toast */
 #toast{position:fixed;bottom:calc(110px + var(--safe-bot));
   left:50%;transform:translateX(-50%) translateY(16px);
   background:var(--bg3);border:1px solid var(--border);
@@ -165,23 +172,26 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;
     </div>
 
     <div id="reduction-badge">— dB<small>SIGNAL ANC</small></div>
+    <div id="gate-status">
+      <span id="gate-dot"></span>
+      <span id="gate-text" style="margin-left:6px">En attente</span>
+    </div>
 
     <div id="debug-panel"><div id="debug-log">En attente…</div></div>
 
-    <!-- Sélecteur micro -->
+    <!-- Micro -->
     <div class="section-label">Source micro</div>
     <div class="mic-toggle">
-      <button class="mic-btn" id="btn-mic-iphone" onclick="selectMic('iphone')">📱 iPhone</button>
-      <button class="mic-btn sel" id="btn-mic-ecouteurs" onclick="selectMic('ecouteurs')">🎧 Écouteurs</button>
+      <button class="mic-btn sel" id="btn-mic-iphone"    onclick="selectMic('iphone')">📱 iPhone</button>
+      <button class="mic-btn"     id="btn-mic-ecouteurs" onclick="selectMic('ecouteurs')">🎧 Écouteurs</button>
     </div>
-    <div id="mic-status" style="font-size:11px;color:var(--muted);margin-bottom:8px;text-align:center;">
-      Micro : détection automatique au démarrage
+    <div id="mic-status" style="font-size:11px;color:var(--muted);margin:6px 0 0;text-align:center;">
+      Micro iPhone recommandé pour une meilleure capture
     </div>
 
-    <!-- Profils -->
+    <!-- Profil Bureau -->
     <div class="section-label">Profil</div>
     <div class="profiles">
-
       <div class="profile-card active-profile">
         <div class="profile-header" onclick="toggleSettings('bureau')">
           <div class="profile-icon" style="background:rgba(59,130,246,.12)">🏢</div>
@@ -193,6 +203,8 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;
         </div>
         <div class="profile-settings" id="settings-bureau">
 
+          <!-- Groupe ENTRÉE -->
+          <div class="ctrl-group-label" style="margin-top:14px">🎙 CAPTURE</div>
           <div class="ctrl">
             <div class="ctrl-header">
               <span class="ctrl-name">Sensibilité micro</span>
@@ -203,30 +215,73 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;
             <div class="ctrl-hints"><span>Faible</span><span>Élevée</span></div>
           </div>
 
-          <div class="ctrl">
-            <div class="ctrl-header">
-              <span class="ctrl-name">Intensité filtrage</span>
-              <span class="ctrl-value" id="val-mu">0.30</span>
+          <!-- Groupe ALGORITHME -->
+          <div class="ctrl-group">
+            <div class="ctrl-group-label">⚙️ ALGORITHME</div>
+
+            <div class="ctrl">
+              <div class="ctrl-header">
+                <span class="ctrl-name">Délai de phase</span>
+                <span class="ctrl-value" id="val-delay">8 ms</span>
+              </div>
+              <input type="range" id="slider-delay" min="1" max="20" step="1" value="8"
+                     oninput="updateDelay(this.value)">
+              <div class="ctrl-hints"><span>1 ms</span><span>20 ms</span></div>
             </div>
-            <input type="range" id="slider-mu" min="10" max="50" value="30"
-                   oninput="updateMu(this.value)">
-            <div class="ctrl-hints"><span>Doux</span><span>Fort</span></div>
+
+            <div class="ctrl">
+              <div class="ctrl-header">
+                <span class="ctrl-name">Intensité filtrage</span>
+                <span class="ctrl-value" id="val-mu">0.30</span>
+              </div>
+              <input type="range" id="slider-mu" min="10" max="50" value="30"
+                     oninput="updateMu(this.value)">
+              <div class="ctrl-hints"><span>Doux</span><span>Fort</span></div>
+            </div>
           </div>
 
-          <div class="ctrl">
-            <div class="ctrl-header">
-              <span class="ctrl-name">Couleur du résidu</span>
-              <span class="ctrl-value" id="val-cutoff">400 Hz</span>
+          <!-- Groupe SORTIE -->
+          <div class="ctrl-group">
+            <div class="ctrl-group-label">🔊 SORTIE ÉCOUTEURS</div>
+
+            <div class="ctrl">
+              <div class="ctrl-header">
+                <span class="ctrl-name">Volume ANC</span>
+                <span class="ctrl-value" id="val-outvol">50%</span>
+              </div>
+              <input type="range" id="slider-outvol" min="0" max="100" step="5" value="50"
+                     oninput="updateOutVol(this.value)">
+              <div class="ctrl-hints"><span>Faible</span><span>Fort</span></div>
             </div>
-            <input type="range" id="slider-cutoff" min="200" max="800" step="50" value="400"
-                   oninput="updateCutoff(this.value)">
-            <div class="ctrl-hints"><span>Plus sourd</span><span>Plus naturel</span></div>
+
+            <div class="ctrl">
+              <div class="ctrl-header">
+                <span class="ctrl-name">Couleur du résidu</span>
+                <span class="ctrl-value" id="val-cutoff">400 Hz</span>
+              </div>
+              <input type="range" id="slider-cutoff" min="200" max="800" step="50" value="400"
+                     oninput="updateCutoff(this.value)">
+              <div class="ctrl-hints"><span>Plus sourd</span><span>Plus naturel</span></div>
+            </div>
+
+            <div class="toggle-row">
+              <div>
+                <div class="toggle-label">Filtre voix</div>
+                <div class="toggle-desc">Coupe l'ANC quand quelqu'un parle</div>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="toggle-speechgate" checked
+                       onchange="updateSpeechGate(this.checked)">
+                <span class="slider-sw"></span>
+              </label>
+            </div>
           </div>
 
           <button class="btn-reset" onclick="resetDefaults()">↺ Réinitialiser les valeurs par défaut</button>
         </div>
       </div>
 
+      <!-- Transports -->
       <div class="section-label" style="margin-top:14px">Transports — bientôt disponibles</div>
       <div class="profile-card locked">
         <div class="profile-header" onclick="showLocked('Bus')">
@@ -252,7 +307,6 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;
           <div class="profile-badge badge-bientot">Bientôt</div>
         </div>
       </div>
-
       <div class="section-label" style="margin-top:14px">Moto</div>
       <div class="profile-card locked">
         <div class="profile-header" onclick="showLocked('Moto')">
@@ -272,192 +326,170 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;
 <div id="toast"></div>
 
 <script>
-const DEFAULTS = { mu:30, cutoff:400, gain:10 };
+const DEFAULTS = { mu:30, cutoff:400, gain:10, delay:8, outvol:50, speechGate:true };
 const state = {
   running:false, mu:0.3, cutoff:400, gainValue:10,
-  micMode:'ecouteurs',   // 'iphone' | 'ecouteurs'
-  devices:[],
+  delayMs:8, outVol:0.5, speechGate:true,
+  micMode:'iphone', devices:[],
   audioCtx:null, stream:null, source:null,
-  inputGain:null, worklet:null, lpFilter:null,
+  inputGain:null, outputGain:null, worklet:null, lpFilter:null,
   analyserIn:null, analyserOut:null, animFrame:null,
-  rmsHistory:{ in:[], out:[] },
+  rmsHistory:{in:[],out:[]},
 };
 
-// ── Debug ──────────────────────────────────────────────────
-let debugVisible = false;
+let debugVisible=false;
 function toggleDebug(){
-  debugVisible = !debugVisible;
-  document.getElementById('debug-panel').classList.toggle('visible', debugVisible);
+  debugVisible=!debugVisible;
+  document.getElementById('debug-panel').classList.toggle('visible',debugVisible);
 }
-function dbg(msg, type=''){
-  const log = document.getElementById('debug-log');
-  const line = document.createElement('div');
-  line.className = type ? 'debug-' + type : '';
-  line.textContent = '› ' + msg;
+function dbg(msg,type=''){
+  const log=document.getElementById('debug-log');
+  const line=document.createElement('div');
+  line.className=type?'debug-'+type:'';
+  line.textContent='› '+msg;
   log.appendChild(line);
-  log.scrollTop = log.scrollHeight;
-  if(log.children.length > 40) log.removeChild(log.firstChild);
-  console.log('[SilenZ]', msg);
+  log.scrollTop=log.scrollHeight;
+  if(log.children.length>40) log.removeChild(log.firstChild);
+  console.log('[SilenZ]',msg);
 }
 
-// ── Sélecteur micro ────────────────────────────────────────
 function selectMic(mode){
-  state.micMode = mode;
-  document.getElementById('btn-mic-iphone').classList.toggle('sel', mode==='iphone');
-  document.getElementById('btn-mic-ecouteurs').classList.toggle('sel', mode==='ecouteurs');
-  document.getElementById('mic-status').textContent =
-    mode==='iphone' ? 'Micro iPhone — capte mieux le bruit ambiant' :
-                      'Micro écouteurs — capte depuis l\'oreille';
-  if(state.running){ stopProcessing(); setTimeout(startProcessing, 300); }
+  state.micMode=mode;
+  document.getElementById('btn-mic-iphone').classList.toggle('sel',mode==='iphone');
+  document.getElementById('btn-mic-ecouteurs').classList.toggle('sel',mode==='ecouteurs');
+  document.getElementById('mic-status').textContent=
+    mode==='iphone'?'Micro iPhone — capte mieux le bruit ambiant depuis l\'extérieur':
+                    'Micro écouteurs — capte depuis l\'intérieur de l\'oreille';
+  if(state.running){ stopProcessing(); setTimeout(startProcessing,300); }
 }
 
 async function getMicConstraints(){
-  // Toujours désactiver les traitements automatiques iOS
-  const base = { echoCancellation:false, noiseSuppression:false, autoGainControl:false, sampleRate:48000 };
-
-  if(state.micMode === 'iphone'){
-    // Essayer de trouver le micro iPhone parmi les devices listés
-    if(state.devices.length === 0){
-      try {
-        const devs = await navigator.mediaDevices.enumerateDevices();
-        state.devices = devs.filter(d => d.kind === 'audioinput');
-        dbg('Micros disponibles : ' + state.devices.map(d=>d.label||d.deviceId.slice(0,8)).join(', '));
-      } catch(e){ dbg('Enum devices : ' + e.message, 'warn'); }
+  const base={echoCancellation:false,noiseSuppression:false,autoGainControl:false,sampleRate:48000};
+  if(state.micMode==='iphone'){
+    if(state.devices.length===0){
+      try{
+        const devs=await navigator.mediaDevices.enumerateDevices();
+        state.devices=devs.filter(d=>d.kind==='audioinput');
+        dbg('Micros: '+state.devices.map(d=>d.label||d.deviceId.slice(0,8)).join(' | '));
+      }catch(e){dbg('Enum: '+e.message,'warn');}
     }
-    // Chercher un micro "built-in" / "iPhone" / "Bottom" / "Front"
-    const iphone = state.devices.find(d =>
-      /built.in|iphone|bottom|front|internal/i.test(d.label) &&
-      !/headset|earphone|écouteur/i.test(d.label)
-    );
-    if(iphone){
-      dbg('Micro iPhone sélectionné : ' + iphone.label, 'ok');
-      return { audio: { ...base, deviceId: { exact: iphone.deviceId } } };
-    }
-    // Fallback : prendre le premier qui n'est pas "headset"
-    const fallback = state.devices.find(d => !/headset|earphone/i.test(d.label));
-    if(fallback){
-      dbg('Micro fallback : ' + (fallback.label || fallback.deviceId.slice(0,8)), 'warn');
-      return { audio: { ...base, deviceId: { exact: fallback.deviceId } } };
-    }
-    dbg('Impossible d\'isoler micro iPhone — micro par défaut utilisé', 'warn');
+    const iphone=state.devices.find(d=>/built.in|iphone|bottom|front|internal/i.test(d.label)&&!/headset|earphone/i.test(d.label));
+    if(iphone){ dbg('Micro iPhone: '+iphone.label,'ok'); return{audio:{...base,deviceId:{exact:iphone.deviceId}}}; }
+    const fallback=state.devices.find(d=>!/headset|earphone/i.test(d.label));
+    if(fallback){ dbg('Fallback micro: '+(fallback.label||fallback.deviceId.slice(0,8)),'warn'); return{audio:{...base,deviceId:{exact:fallback.deviceId}}}; }
   }
-  return { audio: base };
+  return{audio:base};
 }
 
-// ── Audio ──────────────────────────────────────────────────
 async function toggleProcessing(){
-  if(state.running){ stopProcessing(); return; }
+  if(state.running){stopProcessing();return;}
   await startProcessing();
 }
 
 async function startProcessing(){
-  const btn = document.getElementById('btn-main');
-  btn.disabled = true; btn.textContent = 'Démarrage…';
+  const btn=document.getElementById('btn-main');
+  btn.disabled=true; btn.textContent='Démarrage…';
   if(!debugVisible) toggleDebug();
-
-  try {
+  try{
     dbg('Création AudioContext…');
-    state.audioCtx = new (window.AudioContext || window.webkitAudioContext)({
-      sampleRate: 48000, latencyHint: 'interactive',
-    });
+    state.audioCtx=new (window.AudioContext||window.webkitAudioContext)({sampleRate:48000,latencyHint:'interactive'});
     await state.audioCtx.resume();
-    dbg('AudioContext OK — SR:' + state.audioCtx.sampleRate +
-        'Hz — latence:' + Math.round((state.audioCtx.baseLatency||0)*1000) + 'ms', 'ok');
+    const baseMs=Math.round((state.audioCtx.baseLatency||0)*1000);
+    const outMs=Math.round((state.audioCtx.outputLatency||0)*1000);
+    dbg('AudioContext OK — latence base:'+baseMs+'ms sortie:'+outMs+'ms','ok');
 
-    dbg('Demande accès micro (' + state.micMode + ')…');
-    const constraints = await getMicConstraints();
-    state.stream = await navigator.mediaDevices.getUserMedia(constraints);
-
-    // Énumérer après permission (iOS ne donne les labels qu'après getUserMedia)
-    if(state.devices.length === 0){
-      const devs = await navigator.mediaDevices.enumerateDevices();
-      state.devices = devs.filter(d => d.kind === 'audioinput');
-    }
-    const track = state.stream.getAudioTracks()[0];
-    const trackSettings = track.getSettings ? track.getSettings() : {};
-    dbg('Micro OK — ' + (track.label||'label inconnu'), 'ok');
-    document.getElementById('mic-status').textContent = '🎙 ' + (track.label || 'Micro actif');
+    dbg('Accès micro ('+state.micMode+')…');
+    const constraints=await getMicConstraints();
+    state.stream=await navigator.mediaDevices.getUserMedia(constraints);
+    if(state.devices.length===0){const d=await navigator.mediaDevices.enumerateDevices();state.devices=d.filter(x=>x.kind==='audioinput');}
+    const track=state.stream.getAudioTracks()[0];
+    dbg('Micro OK — '+(track.label||'inconnu'),'ok');
+    document.getElementById('mic-status').textContent='🎙 '+(track.label||'Micro actif');
 
     dbg('Chargement AudioWorklet…');
-    await state.audioCtx.audioWorklet.addModule(new URL('./nlms-worklet.js', location.href).href);
-    dbg('AudioWorklet chargé', 'ok');
+    await state.audioCtx.audioWorklet.addModule(new URL('./nlms-worklet.js',location.href).href);
+    dbg('AudioWorklet chargé','ok');
 
-    const latMs = Math.round(((state.audioCtx.baseLatency||0.005) +
-                               (state.audioCtx.outputLatency||0.005)) * 1000);
-
-    state.worklet = new AudioWorkletNode(state.audioCtx, 'nlms-processor', {
-      processorOptions:{ filterLength:256, mu:state.mu, latencyMs:Math.max(latMs,5) },
-      numberOfInputs:1, numberOfOutputs:1, outputChannelCount:[1],
+    state.worklet=new AudioWorkletNode(state.audioCtx,'nlms-processor',{
+      processorOptions:{filterLength:256,mu:state.mu,delayMs:state.delayMs,
+        outputScale:1.0,speechGate:state.speechGate},
+      numberOfInputs:1,numberOfOutputs:1,outputChannelCount:[1],
     });
-    state.worklet.port.onmessage = onWorkletStats;
-    state.worklet.onprocessorerror = e => dbg('Worklet error: '+e.message,'err');
-    dbg('NLMSProcessor créé — délai interne:' + Math.max(latMs,5) + 'ms', 'ok');
+    state.worklet.port.onmessage=onWorkletStats;
+    state.worklet.onprocessorerror=e=>dbg('Worklet error: '+e.message,'err');
+    dbg('NLMSProcessor — délai:'+state.delayMs+'ms','ok');
 
-    // Gain d'entrée
-    state.inputGain = state.audioCtx.createGain();
-    state.inputGain.gain.value = state.gainValue;
+    // Gain entrée (sensibilité micro, n'affecte PAS le niveau de sortie)
+    state.inputGain=state.audioCtx.createGain();
+    state.inputGain.gain.value=state.gainValue;
 
-    // Filtre passe-bas sur la sortie ANC
-    state.lpFilter = state.audioCtx.createBiquadFilter();
-    state.lpFilter.type = 'lowpass';
-    state.lpFilter.frequency.value = state.cutoff;
-    state.lpFilter.Q.value = 0.7;
+    // Gain sortie indépendant (volume ANC dans les écouteurs)
+    state.outputGain=state.audioCtx.createGain();
+    state.outputGain.gain.value=state.outVol;
 
-    state.analyserIn  = state.audioCtx.createAnalyser();
-    state.analyserOut = state.audioCtx.createAnalyser();
-    state.analyserIn.fftSize = state.analyserOut.fftSize = 512;
+    state.lpFilter=state.audioCtx.createBiquadFilter();
+    state.lpFilter.type='lowpass';
+    state.lpFilter.frequency.value=state.cutoff;
+    state.lpFilter.Q.value=0.7;
 
-    // Chaîne : source → gain → analyserIn → worklet(NLMS, sort -y) → lpFilter → analyserOut → écouteurs
-    state.source = state.audioCtx.createMediaStreamSource(state.stream);
+    state.analyserIn=state.audioCtx.createAnalyser();
+    state.analyserOut=state.audioCtx.createAnalyser();
+    state.analyserIn.fftSize=state.analyserOut.fftSize=512;
+
+    // Chaîne : source→inputGain→analyserIn→worklet(-y)→lpFilter→outputGain→analyserOut→écouteurs
+    state.source=state.audioCtx.createMediaStreamSource(state.stream);
     state.source.connect(state.inputGain);
     state.inputGain.connect(state.analyserIn);
     state.analyserIn.connect(state.worklet);
     state.worklet.connect(state.lpFilter);
-    state.lpFilter.connect(state.analyserOut);
+    state.lpFilter.connect(state.outputGain);
+    state.outputGain.connect(state.analyserOut);
     state.analyserOut.connect(state.audioCtx.destination);
 
-    dbg('Chaîne connectée ✓ — gain:+' + Math.round(20*Math.log10(state.gainValue)) + 'dB', 'ok');
-    dbg('Signal ANC (-y) en route vers écouteurs', 'ok');
-    state.running = true;
+    dbg('Chaîne connectée ✓','ok');
+    dbg('Gain entrée:×'+state.gainValue.toFixed(1)+' | Vol ANC:'+(state.outVol*100).toFixed(0)+'%','ok');
+    state.running=true;
     updateUI(true);
     startVULoop();
-
-  } catch(err){
-    dbg('ERREUR : ' + err.name + ' — ' + err.message, 'err');
-    const msg = err.name==='NotAllowedError' ? 'Accès micro refusé — Réglages > Safari > Micro' :
-                err.name==='NotFoundError'    ? 'Aucun micro trouvé' : 'Erreur : ' + err.message;
-    showToast(msg);
+  }catch(err){
+    dbg('ERREUR: '+err.name+' — '+err.message,'err');
+    showToast(err.name==='NotAllowedError'?'Accès micro refusé — Réglages > Safari':'Erreur: '+err.message);
     btn.disabled=false; btn.textContent='Démarrer la réduction de bruit';
-    if(state.audioCtx){ state.audioCtx.close(); state.audioCtx=null; }
+    if(state.audioCtx){state.audioCtx.close();state.audioCtx=null;}
   }
 }
 
 function stopProcessing(){
-  state.running = false;
+  state.running=false;
   cancelAnimationFrame(state.animFrame);
-  try{
-    state.analyserOut?.disconnect(); state.lpFilter?.disconnect();
-    state.worklet?.disconnect(); state.analyserIn?.disconnect();
-    state.inputGain?.disconnect(); state.source?.disconnect();
-  }catch(e){}
+  try{state.analyserOut?.disconnect();state.outputGain?.disconnect();
+    state.lpFilter?.disconnect();state.worklet?.disconnect();
+    state.analyserIn?.disconnect();state.inputGain?.disconnect();state.source?.disconnect();}catch(e){}
   state.stream?.getTracks().forEach(t=>t.stop());
   state.audioCtx?.close();
-  state.rmsHistory.in=[]; state.rmsHistory.out=[];
+  state.rmsHistory.in=[];state.rmsHistory.out=[];
   updateUI(false);
   dbg('Arrêté');
 }
 
+let lastGate=1;
 function onWorkletStats(e){
   state.rmsHistory.in.push(e.data.rmsIn);
   state.rmsHistory.out.push(e.data.rmsOut);
-  if(state.rmsHistory.in.length > 20){
-    state.rmsHistory.in.shift(); state.rmsHistory.out.shift();
+  if(state.rmsHistory.in.length>20){state.rmsHistory.in.shift();state.rmsHistory.out.shift();}
+  // Gate indicator
+  lastGate=e.data.gate;
+  const dot=document.getElementById('gate-dot');
+  const txt=document.getElementById('gate-text');
+  if(e.data.gate<0.3){
+    dot.className='muted'; txt.textContent='Voix détectée — ANC suspendu';
+  } else {
+    dot.className=''; txt.textContent='ANC actif — bruit stationnaire';
   }
 }
 
-// ── VU loop ────────────────────────────────────────────────
 function startVULoop(){
-  const bI=new Float32Array(512), bO=new Float32Array(512);
+  const bI=new Float32Array(512),bO=new Float32Array(512);
   function loop(){
     if(!state.running) return;
     state.analyserIn.getFloatTimeDomainData(bI);
@@ -466,20 +498,19 @@ function startVULoop(){
     const rO=Math.sqrt(bO.reduce((s,v)=>s+v*v,0)/bO.length);
     const dI=rI>1e-5?20*Math.log10(rI):-60;
     const dO=rO>1e-5?20*Math.log10(rO):-60;
-    document.getElementById('vu-in-fill').style.width  = Math.max(0,Math.min(100,(dI+60)/60*100))+'%';
-    document.getElementById('vu-out-fill').style.width = Math.max(0,Math.min(100,(dO+60)/60*100))+'%';
-    document.getElementById('vu-in-db').textContent    = dI.toFixed(1)+' dB';
-    document.getElementById('vu-out-db').textContent   = dO.toFixed(1)+' dB';
-
+    document.getElementById('vu-in-fill').style.width=Math.max(0,Math.min(100,(dI+60)/60*100))+'%';
+    document.getElementById('vu-out-fill').style.width=Math.max(0,Math.min(100,(dO+60)/60*100))+'%';
+    document.getElementById('vu-in-db').textContent=dI.toFixed(1)+' dB';
+    document.getElementById('vu-out-db').textContent=dO.toFixed(1)+' dB';
     if(state.rmsHistory.in.length>3){
       const n=Math.min(state.rmsHistory.in.length,10);
       const aI=state.rmsHistory.in.slice(-n).reduce((a,b)=>a+b,0)/n;
       const aO=state.rmsHistory.out.slice(-n).reduce((a,b)=>a+b,0)/n;
       if(aI>1e-6){
-        const ratio=20*Math.log10(aO/aI);
+        const db=20*Math.log10(aO/aI);
         const badge=document.getElementById('reduction-badge');
-        badge.childNodes[0].textContent=(ratio>=0?'+':'')+ratio.toFixed(1)+' dB';
-        badge.className=ratio>-3?'good':'';
+        badge.childNodes[0].textContent=(db>=0?'+':'')+db.toFixed(1)+' dB';
+        badge.className=db>-3?'good':'';
       }
     }
     state.animFrame=requestAnimationFrame(loop);
@@ -487,36 +518,50 @@ function startVULoop(){
   loop();
 }
 
-// ── Contrôles ──────────────────────────────────────────────
 function updateGain(v){
   state.gainValue=parseFloat(v);
   const db=Math.round(20*Math.log10(state.gainValue));
   document.getElementById('val-gain').textContent='+'+db+' dB';
-  if(state.inputGain)
-    state.inputGain.gain.setTargetAtTime(state.gainValue,state.audioCtx.currentTime,.05);
+  if(state.inputGain) state.inputGain.gain.setTargetAtTime(state.gainValue,state.audioCtx.currentTime,.05);
+}
+function updateDelay(v){
+  state.delayMs=parseInt(v);
+  document.getElementById('val-delay').textContent=state.delayMs+' ms';
+  state.worklet?.port.postMessage({delayMs:state.delayMs});
 }
 function updateMu(v){
   state.mu=v/100;
   document.getElementById('val-mu').textContent=state.mu.toFixed(2);
   state.worklet?.port.postMessage({mu:state.mu});
 }
+function updateOutVol(v){
+  state.outVol=v/100;
+  document.getElementById('val-outvol').textContent=v+'%';
+  if(state.outputGain) state.outputGain.gain.setTargetAtTime(state.outVol,state.audioCtx.currentTime,.05);
+}
 function updateCutoff(v){
   state.cutoff=parseInt(v);
   document.getElementById('val-cutoff').textContent=state.cutoff+' Hz';
-  if(state.lpFilter)
-    state.lpFilter.frequency.setTargetAtTime(state.cutoff,state.audioCtx.currentTime,.05);
+  if(state.lpFilter) state.lpFilter.frequency.setTargetAtTime(state.cutoff,state.audioCtx.currentTime,.05);
+}
+function updateSpeechGate(checked){
+  state.speechGate=checked;
+  state.worklet?.port.postMessage({speechGate:checked});
+  dbg('Filtre voix : '+(checked?'activé':'désactivé'));
 }
 function resetDefaults(){
   document.getElementById('slider-gain').value=DEFAULTS.gain;
   document.getElementById('slider-mu').value=DEFAULTS.mu;
   document.getElementById('slider-cutoff').value=DEFAULTS.cutoff;
-  updateGain(DEFAULTS.gain); updateMu(DEFAULTS.mu); updateCutoff(DEFAULTS.cutoff);
+  document.getElementById('slider-delay').value=DEFAULTS.delay;
+  document.getElementById('slider-outvol').value=DEFAULTS.outvol;
+  document.getElementById('toggle-speechgate').checked=DEFAULTS.speechGate;
+  updateGain(DEFAULTS.gain);updateMu(DEFAULTS.mu);updateCutoff(DEFAULTS.cutoff);
+  updateDelay(DEFAULTS.delay);updateOutVol(DEFAULTS.outvol);updateSpeechGate(DEFAULTS.speechGate);
   showToast('Valeurs réinitialisées');
 }
-function toggleSettings(p){ document.getElementById('settings-'+p)?.classList.toggle('hidden'); }
-function showLocked(n){ showToast(n+' — disponible prochainement'); }
-
-// ── UI ─────────────────────────────────────────────────────
+function toggleSettings(p){document.getElementById('settings-'+p)?.classList.toggle('hidden');}
+function showLocked(n){showToast(n+' — disponible prochainement');}
 function updateUI(running){
   const btn=document.getElementById('btn-main');
   btn.disabled=false;
@@ -526,24 +571,22 @@ function updateUI(running){
   document.getElementById('logo-ring').className=running?'logo-ring active':'logo-ring';
   if(!running){
     const b=document.getElementById('reduction-badge');
-    b.childNodes[0].textContent='— dB'; b.className='';
+    b.childNodes[0].textContent='— dB';b.className='';
     ['vu-in-fill','vu-out-fill'].forEach(id=>document.getElementById(id).style.width='0%');
     ['vu-in-db','vu-out-db'].forEach(id=>document.getElementById(id).textContent='— dB');
+    document.getElementById('gate-dot').className='';
+    document.getElementById('gate-text').textContent='En attente';
   }
 }
 let toastTimer;
 function showToast(msg){
-  const t=document.getElementById('toast');
-  t.textContent=msg; t.classList.add('show');
-  clearTimeout(toastTimer);
-  toastTimer=setTimeout(()=>t.classList.remove('show'),3000);
+  const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
+  clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),3000);
 }
-
-// ── Init ───────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded',()=>{
-  updateGain(DEFAULTS.gain); updateMu(DEFAULTS.mu); updateCutoff(DEFAULTS.cutoff);
-  if('serviceWorker' in navigator)
-    navigator.serviceWorker.register('./sw.js').catch(e=>dbg('SW:'+e,'warn'));
+  updateGain(DEFAULTS.gain);updateMu(DEFAULTS.mu);updateCutoff(DEFAULTS.cutoff);
+  updateDelay(DEFAULTS.delay);updateOutVol(DEFAULTS.outvol);
+  if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(e=>dbg('SW:'+e,'warn'));
 });
 </script>
 </body>
